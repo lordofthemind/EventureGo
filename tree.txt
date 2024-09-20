@@ -1,0 +1,10 @@
+.
+├── Changelog.md
+├── Makefile
+├── Readme.md
+├── config.yaml
+├── go.mod
+├── main.go
+└── tree.txt
+
+1 directory, 7 files
