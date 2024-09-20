@@ -1,0 +1,31 @@
+# .air.toml
+
+# The root directory where Air will look for files to watch.
+root = "."
+# The directory where the compiled binary will be placed.
+bin = "bin/linux"
+
+# The main Go file to run.
+main = "main.go"
+
+# List of file extensions to watch.
+# Leave empty to watch all files.
+watch_ext = ["go","yaml"]
+
+# List of file paths to ignore.
+ignore = [
+    "logs/*",
+    "vendor/*",
+    "bin/*"
+]
+
+# The command to run when changes are detected.
+# If empty, the default "go build" will be used.
+build = "go build -o ./bin/linux/EventureGo main.go"
+
+# The command to run after a successful build.
+# This should be the command to run your application.
+cmd = "./bin/linux/EventureGo"
+
+# Optionally, set a delay between changes before restarting.
+delay = "100ms"

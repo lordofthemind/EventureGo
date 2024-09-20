@@ -2,9 +2,37 @@
 ├── Changelog.md
 ├── Makefile
 ├── Readme.md
+├── bin
+├── cmd
 ├── config.yaml
+├── configs
+├── docker
+├── docs
+├── examples
 ├── go.mod
+├── go.sum
+├── internals
+│   ├── handlers
+│   ├── initializers
+│   ├── repositories
+│   │   ├── SuperUserInterface.go
+│   │   ├── inmemory
+│   │   │   └── SuperUserInMemoryRepository.go
+│   │   ├── mongodb
+│   │   │   └── SuperUserMongodbRepository.go
+│   │   └── postgresdb
+│   │       └── SuperUserPostgresdbRepository.go
+│   ├── responses
+│   ├── routes
+│   ├── services
+│   ├── types
+│   │   └── SuperUserType.go
+│   └── utils
 ├── main.go
+├── pkgs
+│   └── tree.txt
+├── scripts
+├── ssl
 └── tree.txt
 
-1 directory, 7 files
+22 directories, 14 files

@@ -1,0 +1,5 @@
+postgres_url: postgresql://postgres:EventifyGoSecret@localhost:5432/EventifyGo
+
+mongodb_uri: mongodb://localhost:27017/
+
+database_type: mongodb
