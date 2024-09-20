@@ -21,7 +21,6 @@ func NewSuperUserGinHandler(service services.SuperUserServiceInterface) *SuperUs
 func (h *SuperUserGinHandler) RegisterSuperUserHandler(c *gin.Context) {
 	var req utils.RegisterSuperuserRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		// Use standardized response for invalid input
 		response := responses.NewGinResponse(c, http.StatusBadRequest, "Invalid input", nil, err.Error())
 		c.JSON(http.StatusBadRequest, response)
 		return

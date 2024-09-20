@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	Port         int
 	PostgresURL  string
 	MongodbURI   string
 	GormDB       *gorm.DB
