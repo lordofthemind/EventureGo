@@ -20,3 +20,17 @@ type SuperUserType struct {
 	TwoFactorSecret  *string   `bson:"two_factor_secret,omitempty" json:"-" gorm:"type:text"`
 	PermissionGroups []string  `bson:"permission_groups" json:"permission_groups" validate:"dive,required" gorm:"type:text[]"`
 }
+
+// NewSuperUser creates a new instance of SuperUserType
+func NewSuperUser(email, fullName, username, hashedPassword string) *SuperUserType {
+	return &SuperUserType{
+		ID:             uuid.New(),
+		Email:          email,
+		FullName:       fullName,
+		Username:       username,
+		HashedPassword: hashedPassword,
+		Role:           "guest", // default role
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+	}
+}

@@ -20,10 +20,10 @@ func NewSuperUserGinHandler(service services.SuperUserServiceInterface) *SuperUs
 
 // RegisterSuperUserHandler handles the registration of a new superuser
 func (h *SuperUserGinHandler) RegisterSuperUserHandler(c *gin.Context) {
+	// Assuming validation middleware is applied to validate the request
 	var req utils.RegisterSuperuserRequest
 	if err := c.ShouldBind(&req); err != nil {
-		response := responses.NewGinResponse(c, http.StatusBadRequest, "Invalid input", nil, err.Error())
-		c.JSON(http.StatusBadRequest, response)
+		responses.NewGinResponse(c, http.StatusBadRequest, "Invalid input", nil, err.Error())
 		return
 	}
 
@@ -31,16 +31,13 @@ func (h *SuperUserGinHandler) RegisterSuperUserHandler(c *gin.Context) {
 	registeredSuperUser, err := h.service.RegisterSuperUser(c.Request.Context(), &req)
 	if err != nil {
 		if newerrors.IsValidationError(err) {
-			response := responses.NewGinResponse(c, http.StatusConflict, err.Error(), nil, nil)
-			c.JSON(http.StatusConflict, response)
+			responses.NewGinResponse(c, http.StatusConflict, err.Error(), nil, nil)
 		} else {
-			response := responses.NewGinResponse(c, http.StatusInternalServerError, "Failed to register superuser", nil, err.Error())
-			c.JSON(http.StatusInternalServerError, response)
+			responses.NewGinResponse(c, http.StatusInternalServerError, "Failed to register superuser", nil, err.Error())
 		}
 		return
 	}
 
-	// Use standardized response for successful registration
-	response := responses.NewGinResponse(c, http.StatusCreated, "Superuser registered successfully", registeredSuperUser, nil)
-	c.JSON(http.StatusCreated, response)
+	// Successful registration
+	responses.NewGinResponse(c, http.StatusCreated, "Superuser registered successfully", registeredSuperUser, nil)
 }

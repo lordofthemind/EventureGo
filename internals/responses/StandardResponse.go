@@ -16,22 +16,22 @@ type StandardResponse struct {
 	RequestID string      `json:"requestId,omitempty"`
 }
 
-// NewResponse returns a standardized response and includes request ID from context
-func NewGinResponse(c *gin.Context, status int, message string, data interface{}, err interface{}) StandardResponse {
-	// Get the request ID from the context and ensure type safety
+// NewGinResponse returns a gin standardized response
+func NewGinResponse(c *gin.Context, status int, message string, data interface{}, err interface{}) {
+	// Retrieve request ID from context, if available
 	requestID, exists := c.Get("RequestID")
 	if !exists {
 		requestID = ""
 	}
 
-	return StandardResponse{
+	c.JSON(status, StandardResponse{
 		Status:    status,
 		Message:   message,
 		Data:      data,
 		Error:     err,
 		Timestamp: time.Now().Format(time.RFC3339),
 		RequestID: requestID.(string),
-	}
+	})
 }
 
 // // NewResponse returns a standardized response and includes request ID from context
