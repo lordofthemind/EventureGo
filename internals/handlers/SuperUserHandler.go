@@ -22,7 +22,8 @@ func (h *SuperUserGinHandler) RegisterSuperUserHandler(c *gin.Context) {
 	var req utils.RegisterSuperuserRequest
 	// Bind and validate request payload
 	if err := c.ShouldBindJSON(&req); err != nil {
-		responses.NewGinResponse(c, http.StatusBadRequest, "Invalid input", nil, err.Error())
+		response := responses.NewGinResponse(c, http.StatusBadRequest, "Invalid input", nil, err.Error())
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
@@ -31,15 +32,18 @@ func (h *SuperUserGinHandler) RegisterSuperUserHandler(c *gin.Context) {
 	if err != nil {
 		// Handle validation errors returned by service
 		if err.Error() == "email already in use" || err.Error() == "username already in use" {
-			responses.NewGinResponse(c, http.StatusConflict, err.Error(), nil, nil)
+			response := responses.NewGinResponse(c, http.StatusConflict, err.Error(), nil, nil)
+			c.JSON(http.StatusConflict, response)
 		} else {
-			responses.NewGinResponse(c, http.StatusInternalServerError, "Failed to register superuser", nil, err.Error())
+			response := responses.NewGinResponse(c, http.StatusInternalServerError, "Failed to register superuser", nil, err.Error())
+			c.JSON(http.StatusInternalServerError, response)
 		}
 		return
 	}
 
 	// Use standardized response for successful registration
-	responses.NewGinResponse(c, http.StatusCreated, "Superuser registered successfully", registeredSuperUser, nil)
+	response := responses.NewGinResponse(c, http.StatusCreated, "Superuser registered successfully", registeredSuperUser, nil)
+	c.JSON(http.StatusCreated, response)
 }
 
 // LogInSuperUserHandler handles the login of a superuser
@@ -47,13 +51,15 @@ func (h *SuperUserGinHandler) LogInSuperUserHandler(c *gin.Context) {
 	var req utils.LogInSuperuserRequest
 	// Bind and validate request payload
 	if err := c.ShouldBindJSON(&req); err != nil {
-		responses.NewGinResponse(c, http.StatusBadRequest, "Invalid input", nil, err.Error())
+		response := responses.NewGinResponse(c, http.StatusBadRequest, "Invalid input", nil, err.Error())
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	// Ensure that either email or username is provided
 	if req.Email == "" && req.Username == "" {
-		responses.NewGinResponse(c, http.StatusBadRequest, "Either email or username is required", nil, nil)
+		response := responses.NewGinResponse(c, http.StatusBadRequest, "Either email or username is required", nil, nil)
+		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
@@ -61,13 +67,16 @@ func (h *SuperUserGinHandler) LogInSuperUserHandler(c *gin.Context) {
 	loggedInSuperUser, err := h.service.LogInSuperuser(c.Request.Context(), &req)
 	if err != nil {
 		if err.Error() == "invalid email/username or password" {
-			responses.NewGinResponse(c, http.StatusUnauthorized, "Invalid email/username or password", nil, nil)
+			response := responses.NewGinResponse(c, http.StatusUnauthorized, "Invalid email/username or password", nil, nil)
+			c.JSON(http.StatusUnauthorized, response)
 		} else {
-			responses.NewGinResponse(c, http.StatusInternalServerError, "Failed to log in", nil, err.Error())
+			response := responses.NewGinResponse(c, http.StatusInternalServerError, "Failed to log in", nil, err.Error())
+			c.JSON(http.StatusInternalServerError, response)
 		}
 		return
 	}
 
 	// Use standardized response for successful login
-	responses.NewGinResponse(c, http.StatusOK, "Login successful", loggedInSuperUser, nil)
+	response := responses.NewGinResponse(c, http.StatusOK, "Login successful", loggedInSuperUser, nil)
+	c.JSON(http.StatusOK, response)
 }
