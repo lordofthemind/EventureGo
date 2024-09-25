@@ -4,8 +4,10 @@
 ├── Readme.md
 ├── bin
 ├── cmd
+│   └── GinServer.go
 ├── config.yaml
 ├── configs
+│   └── MainConfiguration.go
 ├── docker
 ├── docs
 ├── examples
@@ -13,7 +15,11 @@
 ├── go.sum
 ├── internals
 │   ├── handlers
+│   │   └── SuperUserHandler.go
 │   ├── initializers
+│   │   └── DatabaseInitializer.go
+│   ├── newerrors
+│   │   └── SuperUserError.go
 │   ├── repositories
 │   │   ├── SuperUserInterface.go
 │   │   ├── inmemory
@@ -23,16 +29,25 @@
 │   │   └── postgresdb
 │   │       └── SuperUserPostgresdbRepository.go
 │   ├── responses
+│   │   └── StandardResponse.go
 │   ├── routes
+│   │   └── SuperUserGinRoutes.go
 │   ├── services
+│   │   ├── SuperUserService.go
+│   │   └── SuperUserServiceRepository.go
 │   ├── types
 │   │   └── SuperUserType.go
 │   └── utils
+│       └── SuperUserUtils.go
+├── logs
 ├── main.go
 ├── pkgs
 │   └── tree.txt
 ├── scripts
 ├── ssl
+├── tmp
+│   ├── build-errors.log
+│   └── main
 └── tree.txt
 
-22 directories, 14 files
+25 directories, 26 files

@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -33,11 +34,17 @@ func (r *mongoSuperUserRepository) CreateSuperUser(ctx context.Context, superUse
 func (r *mongoSuperUserRepository) FindSuperUserByEmail(ctx context.Context, email string) (*types.SuperUserType, error) {
 	var superUser types.SuperUserType
 	err := r.collection.FindOne(ctx, bson.M{"email": email}).Decode(&superUser)
+	if err == mongo.ErrNoDocuments {
+		return nil, errors.New("superuser not found")
+	}
 	return &superUser, err
 }
 
 func (r *mongoSuperUserRepository) FindSuperUserByUsername(ctx context.Context, username string) (*types.SuperUserType, error) {
 	var superUser types.SuperUserType
 	err := r.collection.FindOne(ctx, bson.M{"username": username}).Decode(&superUser)
+	if err == mongo.ErrNoDocuments {
+		return nil, errors.New("superuser not found")
+	}
 	return &superUser, err
 }
