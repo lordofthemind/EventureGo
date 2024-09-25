@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lordofthemind/EventureGo/internals/newerrors"
 	"github.com/lordofthemind/EventureGo/internals/responses"
 	"github.com/lordofthemind/EventureGo/internals/services"
 	"github.com/lordofthemind/EventureGo/internals/utils"
@@ -20,9 +19,9 @@ func NewSuperUserGinHandler(service services.SuperUserServiceInterface) *SuperUs
 
 // RegisterSuperUserHandler handles the registration of a new superuser
 func (h *SuperUserGinHandler) RegisterSuperUserHandler(c *gin.Context) {
-	// Assuming validation middleware is applied to validate the request
 	var req utils.RegisterSuperuserRequest
-	if err := c.ShouldBind(&req); err != nil {
+	// Bind and validate request payload
+	if err := c.ShouldBindJSON(&req); err != nil {
 		responses.NewGinResponse(c, http.StatusBadRequest, "Invalid input", nil, err.Error())
 		return
 	}
@@ -30,7 +29,8 @@ func (h *SuperUserGinHandler) RegisterSuperUserHandler(c *gin.Context) {
 	// Call the service to register the superuser
 	registeredSuperUser, err := h.service.RegisterSuperUser(c.Request.Context(), &req)
 	if err != nil {
-		if newerrors.IsValidationError(err) {
+		// Handle validation errors returned by service
+		if err.Error() == "email already in use" || err.Error() == "username already in use" {
 			responses.NewGinResponse(c, http.StatusConflict, err.Error(), nil, nil)
 		} else {
 			responses.NewGinResponse(c, http.StatusInternalServerError, "Failed to register superuser", nil, err.Error())
@@ -38,6 +38,6 @@ func (h *SuperUserGinHandler) RegisterSuperUserHandler(c *gin.Context) {
 		return
 	}
 
-	// Successful registration
+	// Use standardized response for successful registration
 	responses.NewGinResponse(c, http.StatusCreated, "Superuser registered successfully", registeredSuperUser, nil)
 }
