@@ -7,4 +7,5 @@ import (
 
 func SetupSuperUserGinRoutes(r *gin.Engine, handler *handlers.SuperUserGinHandler) {
 	r.POST("/superusers/register", handler.RegisterSuperUserHandler)
+	r.POST("/superusers/login", handler.LogInSuperUserHandler)
 }

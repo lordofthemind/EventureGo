@@ -7,5 +7,6 @@ import (
 )
 
 type SuperUserServiceInterface interface {
-	RegisterSuperUser(ctx context.Context, superUser *utils.RegisterSuperuserRequest) (*utils.SuperuserResponse, error)
+	RegisterSuperUser(ctx context.Context, superUser *utils.RegisterSuperuserRequest) (*utils.RegisterSuperuserResponse, error)
+	LogInSuperuser(ctx context.Context, loginRequest *utils.LogInSuperuserRequest) (*utils.LoginSuperuserResponse, error)
 }

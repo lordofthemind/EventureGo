@@ -19,7 +19,7 @@ func NewSuperUserService(repo repositories.SuperUserRepositoryInterface) SuperUs
 }
 
 // RegisterSuperUser registers a new superuser and returns the response object
-func (s *SuperUserService) RegisterSuperUser(ctx context.Context, req *utils.RegisterSuperuserRequest) (*utils.SuperuserResponse, error) {
+func (s *SuperUserService) RegisterSuperUser(ctx context.Context, req *utils.RegisterSuperuserRequest) (*utils.RegisterSuperuserResponse, error) {
 	// Validate email and username availability via validation layer
 	if err := utils.ValidateUniqueness(ctx, req.Email, req.Username, s.repo); err != nil {
 		return nil, err
@@ -42,4 +42,40 @@ func (s *SuperUserService) RegisterSuperUser(ctx context.Context, req *utils.Reg
 
 	// Prepare and return the response object
 	return utils.CreateSuperuserResponse(createdSuperUser), nil
+}
+
+func (s *SuperUserService) LogInSuperuser(ctx context.Context, loginRequest *utils.LogInSuperuserRequest) (*utils.LoginSuperuserResponse, error) {
+	var superUser *types.SuperUserType
+	var err error
+
+	// Fetch the superuser by either email or username
+	if loginRequest.Email != "" {
+		superUser, err = s.repo.FindSuperUserByEmail(ctx, loginRequest.Email)
+	} else if loginRequest.Username != "" {
+		superUser, err = s.repo.FindSuperUserByUsername(ctx, loginRequest.Username)
+	} else {
+		return nil, newerrors.NewValidationError("email or username is required")
+	}
+
+	if err != nil {
+		return nil, newerrors.NewValidationError("invalid email/username or password")
+	}
+
+	// Verify password
+	if err := bcrypt.CompareHashAndPassword([]byte(superUser.HashedPassword), []byte(loginRequest.Password)); err != nil {
+		return nil, newerrors.NewValidationError("invalid email/username or password")
+	}
+
+	// Generate token (JWT or similar)
+	token := "generated_jwt_token"
+
+	// Prepare and return the response
+	return &utils.LoginSuperuserResponse{
+		ID:           superUser.ID,
+		Email:        superUser.Email,
+		Username:     superUser.Username,
+		FullName:     superUser.FullName,
+		Token:        token,
+		Is2FAEnabled: superUser.Is2FAEnabled,
+	}, nil
 }
