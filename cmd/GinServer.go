@@ -8,7 +8,9 @@ import (
 	"github.com/lordofthemind/EventureGo/internals/handlers"
 	"github.com/lordofthemind/EventureGo/internals/initializers"
 	"github.com/lordofthemind/EventureGo/internals/repositories"
+	"github.com/lordofthemind/EventureGo/internals/repositories/inmemory"
 	"github.com/lordofthemind/EventureGo/internals/repositories/mongodb"
+	"github.com/lordofthemind/EventureGo/internals/repositories/postgresdb"
 	"github.com/lordofthemind/EventureGo/internals/routes"
 	"github.com/lordofthemind/EventureGo/internals/services"
 	"github.com/lordofthemind/mygopher/gophermongo"
@@ -41,7 +43,11 @@ func GinServer() {
 			log.Fatalf("Postgres connection was not initialized")
 		}
 		// Initialize Postgres repository (not shown in your example, but you can add it here)
-		// superUserRepository = postgres.NewPostgresSuperUserRepository(configs.GormDB) // Example
+		superUserRepository = postgresdb.NewPostgresSuperUserRepository(configs.GormDB)
+	case "inmemory":
+
+		// Initialize Postgres repository (not shown in your example, but you can add it here)
+		superUserRepository = inmemory.NewInMemorySuperUserRepository()
 
 	case "mongodb":
 		if configs.MongoClient == nil {
