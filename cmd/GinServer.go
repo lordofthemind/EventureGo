@@ -15,6 +15,7 @@ import (
 	"github.com/lordofthemind/EventureGo/internals/routes"
 	"github.com/lordofthemind/EventureGo/internals/services"
 	"github.com/lordofthemind/mygopher/gophermongo"
+	"github.com/lordofthemind/mygopher/gophertoken"
 	"github.com/lordofthemind/mygopher/mygopherlogger"
 )
 
@@ -68,13 +69,19 @@ func GinServer() {
 		log.Fatalf("Invalid database configuration: %s", configs.DatabaseType)
 	}
 
+	// Use the new NewTokenManager function
+	tokenManager, err := gophertoken.NewTokenManager(configs.TokenType, configs.TokenSymmetricKey)
+	if err != nil {
+		log.Fatalf("Failed to initiate token: %v", err)
+	}
+
 	// Initialize service and handler
 	superUserService := services.NewSuperUserService(superUserRepository)
-	superUserHandler := handlers.NewSuperUserGinHandler(superUserService)
+	superUserHandler := handlers.NewSuperUserGinHandler(superUserService, tokenManager)
 
 	// Set up Gin routes
 	router := gin.Default()
-	routes.SetupSuperUserGinRoutes(router, superUserHandler)
+	routes.SetupSuperUserGinRoutes(router, superUserHandler, tokenManager)
 
 	// Dynamically fetch server address and port from the configuration
 	serverAddress := fmt.Sprintf(":%d", configs.ServerPort)

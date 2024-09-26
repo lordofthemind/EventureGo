@@ -4,17 +4,23 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lordofthemind/EventureGo/configs"
 	"github.com/lordofthemind/EventureGo/internals/responses"
 	"github.com/lordofthemind/EventureGo/internals/services"
 	"github.com/lordofthemind/EventureGo/internals/utils"
+	"github.com/lordofthemind/mygopher/gophertoken"
 )
 
 type SuperUserGinHandler struct {
-	service services.SuperUserServiceInterface
+	service      services.SuperUserServiceInterface
+	tokenManager gophertoken.TokenManager
 }
 
-func NewSuperUserGinHandler(service services.SuperUserServiceInterface) *SuperUserGinHandler {
-	return &SuperUserGinHandler{service: service}
+func NewSuperUserGinHandler(service services.SuperUserServiceInterface, tokenManager gophertoken.TokenManager) *SuperUserGinHandler {
+	return &SuperUserGinHandler{
+		service:      service,
+		tokenManager: tokenManager,
+	}
 }
 
 // RegisterSuperUserHandler handles the registration of a new superuser
@@ -76,7 +82,23 @@ func (h *SuperUserGinHandler) LogInSuperUserHandler(c *gin.Context) {
 		return
 	}
 
+	authToken, err := h.tokenManager.GenerateToken(loggedInSuperUser.Username, configs.TokenExpiryDuration)
+	if err != nil {
+		responses.NewGinResponse(c, http.StatusInternalServerError, "Failed to generate token", nil, err)
+		return
+	}
+
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("SuperUserAuthorizationToken", authToken, int(configs.TokenExpiryDuration.Seconds()), "/", "", false, true)
+
 	// Use standardized response for successful login
 	response := responses.NewGinResponse(c, http.StatusOK, "Login successful", loggedInSuperUser, nil)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *SuperUserGinHandler) LogOutSuperUserHandler(c *gin.Context) {
+	c.SetCookie("SuperUserAuthorizationToken", "", -1, "/", "", false, true)
+	// Use standardized response for successful login
+	response := responses.NewGinResponse(c, http.StatusOK, "Logout successful", nil, nil)
 	c.JSON(http.StatusOK, response)
 }

@@ -10,7 +10,7 @@ import (
 
 func AuthTokenMiddleware(tokenManager gophertoken.TokenManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token, err := c.Cookie("SuperUserAuthorization")
+		token, err := c.Cookie("SuperUserAuthorizationToken")
 		if err != nil {
 			response := responses.NewGinResponse(
 				c,
