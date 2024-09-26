@@ -38,7 +38,7 @@ func DatabaseInitializer() {
 
 	if configs.DatabaseType == "mongodb" {
 		// Initialize MongoDB client
-		mongoClient, err := gophermongo.ConnectToMongoDB(ctx, configs.MongodbURI, 10*time.Second, 3)
+		mongoClient, err := gophermongo.ConnectToMongoDB(ctx, configs.MongoDBURI, 10*time.Second, 3)
 		if err != nil {
 			log.Fatalf("Failed to connect to MongoDB: %v", err)
 		}

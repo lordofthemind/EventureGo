@@ -4,6 +4,7 @@
 ├── Readme.md
 ├── bin
 ├── cmd
+│   ├── FiberServer.go
 │   └── GinServer.go
 ├── config.yaml
 ├── configs
@@ -15,9 +16,13 @@
 ├── go.sum
 ├── internals
 │   ├── handlers
-│   │   └── SuperUserHandler.go
+│   │   ├── SuperUserFiberHandler.go
+│   │   └── SuperUserGinHandler.go
 │   ├── initializers
 │   │   └── DatabaseInitializer.go
+│   ├── middlewares
+│   │   ├── JWTMiddleware.go
+│   │   └── RequestIDMiddlware.go
 │   ├── newerrors
 │   │   └── SuperUserError.go
 │   ├── repositories
@@ -31,6 +36,7 @@
 │   ├── responses
 │   │   └── StandardResponse.go
 │   ├── routes
+│   │   ├── SuperUserFiberRoutes.go
 │   │   └── SuperUserGinRoutes.go
 │   ├── services
 │   │   ├── SuperUserService.go
@@ -38,11 +44,57 @@
 │   ├── types
 │   │   └── SuperUserType.go
 │   └── utils
-│       └── SuperUserUtils.go
+│       ├── LogInSuperuserUtils.go
+│       └── RegisterSuperUserUtils.go
 ├── logs
+│   ├── 20240925_175959_ginServer.log
+│   ├── 20240925_180830_ginServer.log
+│   ├── 20240925_181529_ginServer.log
+│   ├── 20240925_181652_ginServer.log
+│   ├── 20240925_181705_ginServer.log
+│   ├── 20240925_181804_ginServer.log
+│   ├── 20240925_181834_ginServer.log
+│   ├── 20240925_182111_ginServer.log
+│   ├── 20240925_182126_ginServer.log
+│   ├── 20240925_182144_ginServer.log
+│   ├── 20240925_182329_ginServer.log
+│   ├── 20240925_182351_ginServer.log
+│   ├── 20240925_182423_ginServer.log
+│   ├── 20240925_182433_ginServer.log
+│   ├── 20240925_182451_ginServer.log
+│   ├── 20240925_182458_ginServer.log
+│   ├── 20240925_182505_ginServer.log
+│   ├── 20240925_182914_ginServer.log
+│   ├── 20240925_182929_ginServer.log
+│   ├── 20240925_182957_ginServer.log
+│   ├── 20240925_183038_ginServer.log
+│   ├── 20240925_183136_ginServer.log
+│   ├── 20240925_183200_ginServer.log
+│   ├── 20240925_184543_ginServer.log
+│   ├── 20240925_184834_ginServer.log
+│   ├── 20240925_184841_ginServer.log
+│   ├── 20240925_184926_ginServer.log
+│   ├── 20240925_185121_ginServer.log
+│   ├── 20240925_185154_ginServer.log
+│   ├── 20240925_185159_ginServer.log
+│   ├── 20240925_185217_ginServer.log
+│   ├── 20240925_185401_ginServer.log
+│   ├── 20240925_185405_ginServer.log
+│   ├── 20240925_185445_ginServer.log
+│   ├── 20240925_185452_ginServer.log
+│   ├── 20240925_185614_ginServer.log
+│   ├── 20240925_185623_ginServer.log
+│   ├── 20240925_185817_ginServer.log
+│   ├── 20240925_185915_ginServer.log
+│   ├── 20240925_190140_ginServer.log
+│   ├── 20240925_190255_ginServer.log
+│   ├── 20240925_190318_ginServer.log
+│   ├── 20240925_190324_ginServer.log
+│   ├── 20240925_190453_ginServer.log
+│   ├── 20240925_190600_fiberServer.log
+│   └── 20240925_190636_ginServer.log
 ├── main.go
 ├── pkgs
-│   └── tree.txt
 ├── scripts
 ├── ssl
 ├── tmp
@@ -50,4 +102,4 @@
 │   └── main
 └── tree.txt
 
-25 directories, 26 files
+26 directories, 77 files

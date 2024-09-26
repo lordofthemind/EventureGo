@@ -1,5 +1,93 @@
-postgres_url: postgresql://postgres:EventifyGoSecret@localhost:5432/EventifyGo
+# Application Configuration
+application:
+  environment: development  # options: development, production, testing, staging
 
-mongodb_uri: mongodb://localhost:27017/
+# Server Configuration
+server:
+  host: "localhost"
+  port: 9090
+  use_tls: true
+  cert_file: ssl/server.crt
+  key_file: ssl/server.pem
 
-database_type: mongodb
+# Database Configuration
+database:
+  type: "postgres"  # options: postgres, mongodb, inmemory
+  postgres_url: "postgresql://postgres:postgressGinStructureSecret@localhost:5434/sGinStructure"
+  mongodb_uri: "mongodb://localhost:27017/"
+  # Add any additional database configurations here
+
+# Token Configuration
+token:
+  type: "jwt"  # options: jwt, paseto
+  symmetric_key: "qwertyuiopasdfghjklzxcvbnmqwerty"
+  access_duration: "15m"  # Token expiration duration
+
+# CORS Configuration
+cors:
+  allowed_origins:
+    - "http://localhost:3000"
+  allowed_methods:
+    - "GET"
+    - "POST"
+    - "PUT"
+    - "DELETE"
+  allowed_headers:
+    - "Origin"
+    - "Content-Type"
+    - "Authorization"
+  exposed_headers:
+    - "Content-Length"
+    - "Content-Range"
+  allow_credentials: true
+
+# Logging Configuration
+logging:
+  level: "info"  # options: debug, info, warn, error
+  file_path: "logs/eventifygo.log"
+
+# Environment-Specific Overrides
+environments:
+  development:
+    server:
+      host: "localhost"
+    database:
+      postgres_url: "postgresql://postgres:postgressGinStructureSecret@localhost:5434/sGinStructure_dev"
+    cors:
+      allowed_origins:
+        - "http://localhost:3000"
+  testing:
+    server:
+      host: "localhost"
+    database:
+      postgres_url: "postgresql://postgres:postgressGinStructureSecret@localhost:5434/sGinStructure_test"
+    cors:
+      allowed_origins:
+        - "http://localhost:3000"
+  staging:
+    server:
+      host: "0.0.0.0"
+    database:
+      postgres_url: "postgresql://postgres:postgressGinStructureSecret@localhost:5434/sGinStructure_staging"
+    cors:
+      allowed_origins:
+        - "https://staging.myproductionapp.com"
+      allowed_methods:
+        - "GET"
+        - "POST"
+  production:
+    server:
+      host: "0.0.0.0"
+    database:
+      postgres_url: "postgresql://postgres:postgressGinStructureSecret@prod-db-server:5434/sGinStructure_prod"
+    cors:
+      allowed_origins:
+        - "https://myproductionapp.com"
+      allowed_methods:
+        - "GET"
+        - "POST"
+    token:
+      symmetric_key: "YourProductionSymmetricKeyHere"
+    logging:
+      level: "warn"
+      file_path: "logs/eventifygo_prod.log"
