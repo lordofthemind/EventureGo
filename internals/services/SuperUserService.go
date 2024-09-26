@@ -2,7 +2,7 @@ package services
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/lordofthemind/EventureGo/internals/newerrors"
@@ -83,15 +83,27 @@ func (s *SuperUserService) LogInSuperuser(ctx context.Context, loginRequest *uti
 }
 
 // SendPasswordResetEmail sends a reset token (placeholder functionality).
-func (s *SuperUserService) SendPasswordResetEmail(ctx context.Context, email string) error {
-	superUser, err := s.repo.FindSuperUserByEmail(ctx, email)
+// SendPasswordResetEmailOrUsername sends a reset token based on email or username.
+func (s *SuperUserService) SendPasswordResetEmailWithUsernameOrEmail(ctx context.Context, email string, username string) error {
+	var superUser *types.SuperUserType
+	var err error
+
+	// Fetch superuser by email or username
+	if email != "" {
+		superUser, err = s.repo.FindSuperUserByEmail(ctx, email)
+	} else if username != "" {
+		superUser, err = s.repo.FindSuperUserByUsername(ctx, username)
+	} else {
+		return newerrors.NewValidationError("email or username is required")
+	}
+
 	if err != nil {
 		return newerrors.Wrap(err, "failed to find superuser")
 	}
 
-	// Generate and send a reset token (placeholder logic)
+	// Generate and send a reset token
 	resetToken := utils.GenerateResetToken() // Placeholder token generation
-	fmt.Printf("Sending password reset token to %s: %s\n", superUser.Email, resetToken)
+	log.Printf("Sending password reset token to %s: %s\n", superUser.Email, resetToken)
 
 	// Store the reset token in the repository
 	return s.repo.UpdateResetToken(ctx, superUser.ID, resetToken)

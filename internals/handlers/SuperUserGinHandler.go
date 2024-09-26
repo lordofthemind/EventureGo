@@ -106,18 +106,26 @@ func (h *SuperUserGinHandler) LogOutSuperUserHandler(c *gin.Context) {
 // PasswordResetRequestHandler handles the request to send a password reset email
 func (h *SuperUserGinHandler) PasswordResetRequestHandler(c *gin.Context) {
 	var request struct {
-		Email string `json:"email" binding:"required,email"`
+		Email    string `json:"email" binding:"omitempty,email" validate:"omitempty,email"`
+		Username string `json:"username" binding:"omitempty,min=3" validate:"omitempty,min=3"`
 	}
 
 	// Bind and validate the request payload
 	if err := c.ShouldBindJSON(&request); err != nil {
-		response := responses.NewGinResponse(c, http.StatusBadRequest, "Invalid email address", nil, err.Error())
+		response := responses.NewGinResponse(c, http.StatusBadRequest, "Invalid email or username", nil, err.Error())
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	// Call the service to send a password reset email
-	err := h.service.SendPasswordResetEmail(c.Request.Context(), request.Email)
+	// Ensure that either email or username is provided
+	if request.Email == "" && request.Username == "" {
+		response := responses.NewGinResponse(c, http.StatusBadRequest, "Either email or username is required", nil, nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	// Call the service to send a password reset email or username reset token
+	err := h.service.SendPasswordResetEmailWithUsernameOrEmail(c.Request.Context(), request.Email, request.Username)
 	if err != nil {
 		response := responses.NewGinResponse(c, http.StatusInternalServerError, "Failed to send reset email", nil, err.Error())
 		c.JSON(http.StatusInternalServerError, response)
