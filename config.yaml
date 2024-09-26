@@ -1,7 +1,7 @@
 # Main Application Configuration
 application:
   environment: "development"  # options: development, production, testing, staging
-  database_type: "mongodb"   # options: postgres, mongodb, inmemory
+  database_type: "postgres"   # options: postgres, mongodb, inmemory
   server_type: "gin"
 
 # Server Configuration (Common across environments)

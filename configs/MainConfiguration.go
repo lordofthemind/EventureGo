@@ -12,6 +12,7 @@ import (
 
 var (
 	// Server Configuration
+	ServerHost  string //
 	ServerPort  int    // The port the server listens on
 	Environment string // The environment (e.g., "development", "production")
 
@@ -26,6 +27,9 @@ var (
 	EnableTLS   bool   // Flag to enable TLS
 	TLSKeyFile  string // Path to the TLS private key file
 	TLSCertFile string // Path to the TLS certificate file
+
+	// Logging
+	LoggingLevel string
 
 	// Token & Authentication
 	TokenType           string        // Type of token used (e.g., "Bearer")
@@ -83,6 +87,12 @@ func LoadMainConfiguration(configFile string) error {
 	default:
 		return fmt.Errorf("unknown database type: %s", DatabaseType)
 	}
+
+	ServerHost = viper.GetString("server.host")
+	ServerPort = viper.GetInt("server.port")
+	EnableTLS = viper.GetBool("server.use_tls")
+
+	LoggingLevel = viper.GetString("logging.level")
 
 	TokenType = viper.GetString("token.type")
 	TokenSymmetricKey = viper.GetString("token.symmetric_key")
