@@ -10,4 +10,5 @@ type SuperUserRepositoryInterface interface {
 	CreateSuperUser(ctx context.Context, superUser *types.SuperUserType) (*types.SuperUserType, error)
 	FindSuperUserByEmail(ctx context.Context, email string) (*types.SuperUserType, error)
 	FindSuperUserByUsername(ctx context.Context, username string) (*types.SuperUserType, error)
+	FindSuperUserByResetToken(ctx context.Context, token string) (*types.SuperUserType, error)
 }

@@ -42,3 +42,13 @@ func (r *postgresSuperUserRepository) FindSuperUserByUsername(ctx context.Contex
 	err := r.db.WithContext(ctx).Where("username = ?", username).First(&superUser).Error
 	return &superUser, err
 }
+
+// FindSuperUserByResetToken retrieves a superuser by their password reset token
+func (r *postgresSuperUserRepository) FindSuperUserByResetToken(ctx context.Context, token string) (*types.SuperUserType, error) {
+	var superUser types.SuperUserType
+	err := r.db.WithContext(ctx).Where("reset_token = ?", token).First(&superUser).Error
+	if err != nil {
+		return nil, err
+	}
+	return &superUser, nil
+}

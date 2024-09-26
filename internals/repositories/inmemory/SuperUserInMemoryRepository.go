@@ -2,6 +2,7 @@ package inmemory
 
 import (
 	"context"
+	"errors"
 	"sync"
 	"time"
 
@@ -55,4 +56,17 @@ func (r *inMemorySuperUserRepository) FindSuperUserByUsername(ctx context.Contex
 		}
 	}
 	return nil, nil
+}
+
+// FindSuperuserByResetToken finds a superuser by reset token in memory.
+func (r *inMemorySuperUserRepository) FindSuperUserByResetToken(ctx context.Context, token string) (*types.SuperUserType, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	for _, su := range r.superUsers {
+		if *su.ResetToken == token {
+			return su, nil
+		}
+	}
+	return nil, errors.New("superuser not found")
 }

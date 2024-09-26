@@ -48,3 +48,13 @@ func (r *mongoSuperUserRepository) FindSuperUserByUsername(ctx context.Context, 
 	}
 	return &superUser, err
 }
+
+// FindSuperuserByResetToken finds a superuser by reset token.
+func (r *mongoSuperUserRepository) FindSuperUserByResetToken(ctx context.Context, token string) (*types.SuperUserType, error) {
+	var superuser types.SuperUserType
+	err := r.collection.FindOne(ctx, bson.M{"reset_token": token}).Decode(&superuser)
+	if err == mongo.ErrNoDocuments {
+		return nil, errors.New("superuser not found")
+	}
+	return &superuser, err
+}
