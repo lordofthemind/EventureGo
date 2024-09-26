@@ -1,18 +1,26 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/lordofthemind/EventureGo/configs"
 	"github.com/lordofthemind/EventureGo/internals/responses"
 	"github.com/lordofthemind/EventureGo/internals/services"
 	"github.com/lordofthemind/EventureGo/internals/utils"
+	"github.com/lordofthemind/mygopher/gophertoken"
 )
 
 type SuperUserFiberHandler struct {
-	service services.SuperUserServiceInterface
+	service      services.SuperUserServiceInterface
+	tokenManager gophertoken.TokenManager
 }
 
-func NewSuperUserFiberHandler(service services.SuperUserServiceInterface) *SuperUserFiberHandler {
-	return &SuperUserFiberHandler{service: service}
+func NewSuperUserFiberHandler(service services.SuperUserServiceInterface, tokenManager gophertoken.TokenManager) *SuperUserFiberHandler {
+	return &SuperUserFiberHandler{
+		service:      service,
+		tokenManager: tokenManager,
+	}
 }
 
 // RegisterSuperUserHandler handles the registration of a new superuser
@@ -31,9 +39,10 @@ func (h *SuperUserFiberHandler) RegisterSuperUserHandler(c *fiber.Ctx) error {
 		if err.Error() == "email already in use" || err.Error() == "username already in use" {
 			response := responses.NewFiberResponse(c, fiber.StatusConflict, err.Error(), nil, nil)
 			return c.Status(fiber.StatusConflict).JSON(response)
+		} else {
+			response := responses.NewFiberResponse(c, fiber.StatusInternalServerError, "Failed to register superuser", nil, err.Error())
+			return c.Status(fiber.StatusInternalServerError).JSON(response)
 		}
-		response := responses.NewFiberResponse(c, fiber.StatusInternalServerError, "Failed to register superuser", nil, err.Error())
-		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
 
 	// Use standardized response for successful registration
@@ -62,10 +71,20 @@ func (h *SuperUserFiberHandler) LogInSuperUserHandler(c *fiber.Ctx) error {
 		if err.Error() == "invalid email/username or password" {
 			response := responses.NewFiberResponse(c, fiber.StatusUnauthorized, "Invalid email/username or password", nil, nil)
 			return c.Status(fiber.StatusUnauthorized).JSON(response)
+		} else {
+			response := responses.NewFiberResponse(c, fiber.StatusInternalServerError, "Failed to log in", nil, err.Error())
+			return c.Status(fiber.StatusInternalServerError).JSON(response)
 		}
-		response := responses.NewFiberResponse(c, fiber.StatusInternalServerError, "Failed to log in", nil, err.Error())
+	}
+
+	authToken, err := h.tokenManager.GenerateToken(loggedInSuperUser.Username, configs.TokenExpiryDuration)
+	if err != nil {
+		response := responses.NewFiberResponse(c, http.StatusInternalServerError, "Failed to generate token", nil, err)
 		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
+
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("SuperUserAuthorizationToken", authToken, int(configs.TokenExpiryDuration.Seconds()), "/", "", false, true)
 
 	// Use standardized response for successful login
 	response := responses.NewFiberResponse(c, fiber.StatusOK, "Login successful", loggedInSuperUser, nil)
