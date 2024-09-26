@@ -10,6 +10,7 @@ import (
 	"github.com/lordofthemind/EventureGo/internals/types"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type mongoSuperUserRepository struct {
@@ -28,7 +29,10 @@ func (r *mongoSuperUserRepository) CreateSuperUser(ctx context.Context, superUse
 	superUser.UpdatedAt = time.Now()
 
 	_, err := r.collection.InsertOne(ctx, superUser)
-	return superUser, err
+	if err != nil {
+		return nil, err
+	}
+	return superUser, nil
 }
 
 func (r *mongoSuperUserRepository) FindSuperUserByEmail(ctx context.Context, email string) (*types.SuperUserType, error) {
@@ -49,12 +53,36 @@ func (r *mongoSuperUserRepository) FindSuperUserByUsername(ctx context.Context, 
 	return &superUser, err
 }
 
-// FindSuperuserByResetToken finds a superuser by reset token.
 func (r *mongoSuperUserRepository) FindSuperUserByResetToken(ctx context.Context, token string) (*types.SuperUserType, error) {
-	var superuser types.SuperUserType
-	err := r.collection.FindOne(ctx, bson.M{"reset_token": token}).Decode(&superuser)
+	var superUser types.SuperUserType
+	err := r.collection.FindOne(ctx, bson.M{"reset_token": token}).Decode(&superUser)
 	if err == mongo.ErrNoDocuments {
 		return nil, errors.New("superuser not found")
 	}
-	return &superuser, err
+	return &superUser, err
+}
+
+func (r *mongoSuperUserRepository) UpdateResetToken(ctx context.Context, superUserID uuid.UUID, resetToken string) error {
+	_, err := r.collection.UpdateOne(
+		ctx,
+		bson.M{"id": superUserID},
+		bson.M{
+			"$set": bson.M{
+				"reset_token": resetToken,
+				"updated_at":  time.Now(),
+			},
+		},
+	)
+	return err
+}
+
+func (r *mongoSuperUserRepository) UpdateSuperUser(ctx context.Context, superUser *types.SuperUserType) error {
+	superUser.UpdatedAt = time.Now()
+	_, err := r.collection.ReplaceOne(
+		ctx,
+		bson.M{"id": superUser.ID},
+		superUser,
+		options.Replace().SetUpsert(true),
+	)
+	return err
 }

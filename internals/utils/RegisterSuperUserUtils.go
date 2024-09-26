@@ -2,6 +2,8 @@ package utils
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"errors"
 	"time"
 
@@ -53,4 +55,21 @@ func ValidateUniqueness(ctx context.Context, email, username string, repo reposi
 	}
 
 	return nil
+}
+
+// GenerateResetToken generates a unique reset token for password resets.
+func GenerateResetToken() string {
+	// Generate a UUID
+	uuidPart := uuid.New().String()
+
+	// Generate a random hex string
+	randomBytes := make([]byte, 16)
+	if _, err := rand.Read(randomBytes); err != nil {
+		panic("failed to generate random bytes for token")
+	}
+	randomPart := hex.EncodeToString(randomBytes)
+
+	// Combine both parts for the final token
+	resetToken := uuidPart + "-" + randomPart
+	return resetToken
 }

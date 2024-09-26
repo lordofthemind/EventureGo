@@ -11,6 +11,8 @@ func SetupSuperUserGinRoutes(router *gin.Engine, superUserHandler *handlers.Supe
 	// Public routes
 	router.POST("/superusers/register", superUserHandler.RegisterSuperUserHandler)
 	router.POST("/superusers/login", superUserHandler.LogInSuperUserHandler)
+	router.POST("/superuser/password-reset/request", superUserHandler.PasswordResetRequestHandler)
+	router.POST("/superuser/password-reset/:token", superUserHandler.PasswordResetHandler)
 
 	// Protected routes with JWTAuthMiddleware
 	protectedRoutes := router.Group("/superusers")

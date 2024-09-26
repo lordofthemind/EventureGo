@@ -102,3 +102,63 @@ func (h *SuperUserGinHandler) LogOutSuperUserHandler(c *gin.Context) {
 	response := responses.NewGinResponse(c, http.StatusOK, "Logout successful", nil, nil)
 	c.JSON(http.StatusOK, response)
 }
+
+// PasswordResetRequestHandler handles the request to send a password reset email
+func (h *SuperUserGinHandler) PasswordResetRequestHandler(c *gin.Context) {
+	var request struct {
+		Email string `json:"email" binding:"required,email"`
+	}
+
+	// Bind and validate the request payload
+	if err := c.ShouldBindJSON(&request); err != nil {
+		response := responses.NewGinResponse(c, http.StatusBadRequest, "Invalid email address", nil, err.Error())
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	// Call the service to send a password reset email
+	err := h.service.SendPasswordResetEmail(c.Request.Context(), request.Email)
+	if err != nil {
+		response := responses.NewGinResponse(c, http.StatusInternalServerError, "Failed to send reset email", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+
+	// Use standardized response for successful email request
+	response := responses.NewGinResponse(c, http.StatusOK, "Password reset email sent successfully", nil, nil)
+	c.JSON(http.StatusOK, response)
+}
+
+// PasswordResetHandler handles the password reset using a token
+func (h *SuperUserGinHandler) PasswordResetHandler(c *gin.Context) {
+	var request struct {
+		Password string `json:"password" binding:"required,min=8"`
+	}
+
+	// Bind and validate the request payload
+	if err := c.ShouldBindJSON(&request); err != nil {
+		response := responses.NewGinResponse(c, http.StatusBadRequest, "Invalid password", nil, err.Error())
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	// Extract the reset token from the URL parameters
+	token := c.Param("token")
+	if token == "" {
+		response := responses.NewGinResponse(c, http.StatusBadRequest, "Invalid reset token", nil, nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	// Call the service to reset the password
+	err := h.service.ResetPassword(c.Request.Context(), token, request.Password)
+	if err != nil {
+		response := responses.NewGinResponse(c, http.StatusInternalServerError, "Failed to reset password", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+
+	// Use standardized response for successful password reset
+	response := responses.NewGinResponse(c, http.StatusOK, "Password reset successful", nil, nil)
+	c.JSON(http.StatusOK, response)
+}

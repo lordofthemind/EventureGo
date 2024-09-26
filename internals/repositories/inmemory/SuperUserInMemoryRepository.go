@@ -43,7 +43,7 @@ func (r *inMemorySuperUserRepository) FindSuperUserByEmail(ctx context.Context, 
 			return su, nil
 		}
 	}
-	return nil, nil
+	return nil, nil // Return nil instead of an error for not found
 }
 
 func (r *inMemorySuperUserRepository) FindSuperUserByUsername(ctx context.Context, username string) (*types.SuperUserType, error) {
@@ -55,18 +55,45 @@ func (r *inMemorySuperUserRepository) FindSuperUserByUsername(ctx context.Contex
 			return su, nil
 		}
 	}
-	return nil, nil
+	return nil, nil // Return nil instead of an error for not found
 }
 
-// FindSuperuserByResetToken finds a superuser by reset token in memory.
 func (r *inMemorySuperUserRepository) FindSuperUserByResetToken(ctx context.Context, token string) (*types.SuperUserType, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
 	for _, su := range r.superUsers {
-		if *su.ResetToken == token {
+		if su.ResetToken != nil && *su.ResetToken == token {
 			return su, nil
 		}
 	}
 	return nil, errors.New("superuser not found")
+}
+
+func (r *inMemorySuperUserRepository) UpdateResetToken(ctx context.Context, superUserID uuid.UUID, resetToken string) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	superUser, exists := r.superUsers[superUserID]
+	if !exists {
+		return errors.New("superuser not found")
+	}
+
+	superUser.ResetToken = &resetToken
+	superUser.UpdatedAt = time.Now()
+	return nil
+}
+
+func (r *inMemorySuperUserRepository) UpdateSuperUser(ctx context.Context, superUser *types.SuperUserType) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	existingSuperUser, exists := r.superUsers[superUser.ID]
+	if !exists {
+		return errors.New("superuser not found")
+	}
+
+	existingSuperUser = superUser
+	existingSuperUser.UpdatedAt = time.Now()
+	return nil
 }
