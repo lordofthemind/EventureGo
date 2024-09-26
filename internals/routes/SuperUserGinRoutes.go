@@ -8,16 +8,18 @@ import (
 )
 
 func SetupSuperUserGinRoutes(router *gin.Engine, superUserHandler *handlers.SuperUserGinHandler, tokenManager gophertoken.TokenManager) {
-	// Public routes
+	// Public routes for registration and password resets
 	router.POST("/superusers/register", superUserHandler.RegisterSuperUserHandler)
 	router.POST("/superusers/login", superUserHandler.LogInSuperUserHandler)
+
+	// Auth routes for protected actions
+	authRoutes := router.Group("/superusers")
+	authRoutes.Use(middlewares.AuthTokenMiddleware(tokenManager)) // Middleware to protect routes
+	{
+		authRoutes.GET("/logout", superUserHandler.LogOutSuperUserHandler)
+		// Add more authenticated routes here as needed
+	}
+
 	router.POST("/superuser/password-reset/request", superUserHandler.PasswordResetRequestHandler)
 	router.POST("/superuser/password-reset/:token", superUserHandler.PasswordResetHandler)
-
-	// Protected routes with JWTAuthMiddleware
-	protectedRoutes := router.Group("/superusers")
-	protectedRoutes.Use(middlewares.AuthTokenMiddleware(tokenManager))
-	{
-		protectedRoutes.GET("/logout", superUserHandler.LogOutSuperUserHandler)
-	}
 }
