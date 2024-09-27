@@ -53,6 +53,7 @@ func (h *SuperUserGinHandler) RegisterSuperUserHandler(c *gin.Context) {
 }
 
 // LogInSuperUserHandler handles the login of a superuser
+// LogInSuperUserHandler handles the login of a superuser
 func (h *SuperUserGinHandler) LogInSuperUserHandler(c *gin.Context) {
 	var req utils.LogInSuperuserRequest
 	// Bind and validate request payload
@@ -82,14 +83,11 @@ func (h *SuperUserGinHandler) LogInSuperUserHandler(c *gin.Context) {
 		return
 	}
 
-	authToken, err := h.tokenManager.GenerateToken(loggedInSuperUser.Username, configs.TokenExpiryDuration)
-	if err != nil {
-		responses.NewGinResponse(c, http.StatusInternalServerError, "Failed to generate token", nil, err)
-		return
-	}
+	// Generate dynamic cookie name using the superuser's role
+	cookieName := loggedInSuperUser.Role + "_SuperUserAuthorizationToken"
 
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("SuperUserAuthorizationToken", authToken, int(configs.TokenExpiryDuration.Seconds()), "/", "", false, true)
+	c.SetCookie(cookieName, loggedInSuperUser.Token, int(configs.TokenExpiryDuration.Seconds()), "/", "", false, true)
 
 	// Use standardized response for successful login
 	response := responses.NewGinResponse(c, http.StatusOK, "Login successful", loggedInSuperUser, nil)

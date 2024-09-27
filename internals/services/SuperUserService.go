@@ -5,19 +5,25 @@ import (
 	"log"
 	"time"
 
+	"github.com/lordofthemind/EventureGo/configs"
 	"github.com/lordofthemind/EventureGo/internals/newerrors"
 	"github.com/lordofthemind/EventureGo/internals/repositories"
 	"github.com/lordofthemind/EventureGo/internals/types"
 	"github.com/lordofthemind/EventureGo/internals/utils"
+	"github.com/lordofthemind/mygopher/gophertoken"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type SuperUserService struct {
-	repo repositories.SuperUserRepositoryInterface
+	repo         repositories.SuperUserRepositoryInterface
+	tokenManager gophertoken.TokenManager
 }
 
-func NewSuperUserService(repo repositories.SuperUserRepositoryInterface) SuperUserServiceInterface {
-	return &SuperUserService{repo: repo}
+func NewSuperUserService(repo repositories.SuperUserRepositoryInterface, tokenManager gophertoken.TokenManager) SuperUserServiceInterface {
+	return &SuperUserService{
+		repo:         repo,
+		tokenManager: tokenManager,
+	}
 }
 
 // RegisterSuperUser registers a new superuser and returns the response object
@@ -68,8 +74,11 @@ func (s *SuperUserService) LogInSuperuser(ctx context.Context, loginRequest *uti
 		return nil, newerrors.NewValidationError("invalid email/username or password")
 	}
 
-	// Generate token (JWT or similar)
-	token := "generated_jwt_token"
+	// Generate token with role
+	authToken, err := s.tokenManager.GenerateToken(superUser.Username, configs.TokenExpiryDuration)
+	if err != nil {
+		return nil, err
+	}
 
 	// Prepare and return the response
 	return &utils.LoginSuperuserResponse{
@@ -77,7 +86,8 @@ func (s *SuperUserService) LogInSuperuser(ctx context.Context, loginRequest *uti
 		Email:        superUser.Email,
 		Username:     superUser.Username,
 		FullName:     superUser.FullName,
-		Token:        token,
+		Role:         superUser.Role,
+		Token:        authToken,
 		Is2FAEnabled: superUser.Is2FAEnabled,
 	}, nil
 }

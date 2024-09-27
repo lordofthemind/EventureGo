@@ -77,7 +77,7 @@ func GinServer() {
 	}
 
 	// Initialize service and handler
-	superUserService := services.NewSuperUserService(superUserRepository)
+	superUserService := services.NewSuperUserService(superUserRepository, tokenManager)
 	superUserHandler := handlers.NewSuperUserGinHandler(superUserService, tokenManager)
 
 	// Set up Gin routes

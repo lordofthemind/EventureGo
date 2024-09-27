@@ -25,6 +25,7 @@ type LoginSuperuserResponse struct {
 	Email        string    `json:"email"`          // Email of the superuser
 	Username     string    `json:"username"`       // Username of the superuser
 	FullName     string    `json:"full_name"`      // Full name of the superuser
+	Role         string    `json:"role"`           // Role assigned to the new superuser
 	Token        string    `json:"token"`          // Authentication token for the session
 	Is2FAEnabled bool      `json:"is_2fa_enabled"` // Indicates if two-factor authentication is enabled
 }

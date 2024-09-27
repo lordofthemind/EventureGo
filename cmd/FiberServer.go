@@ -77,7 +77,7 @@ func FiberServer() {
 	}
 
 	// Initialize service and handler
-	superUserService := services.NewSuperUserService(superUserRepository)
+	superUserService := services.NewSuperUserService(superUserRepository, tokenManager)
 	superUserHandler := handlers.NewSuperUserFiberHandler(superUserService, tokenManager)
 
 	// Set up Fiber routes
