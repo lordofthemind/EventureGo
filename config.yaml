@@ -15,6 +15,7 @@ token:
   type: "jwt"  # options: jwt, paseto
   symmetric_key: "qwertyuiopasdfghjklzxcvbnmqwerty"
   access_duration: "15m"
+  base_cookie_name: "UserEventureAuthorisationToken"
 
 # Logging Configuration (Common across environments)
 logging:

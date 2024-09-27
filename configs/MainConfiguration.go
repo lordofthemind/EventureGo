@@ -32,8 +32,9 @@ var (
 	LoggingLevel string
 
 	// Token & Authentication
-	TokenType           string        // Type of token used (e.g., "Bearer")
-	TokenSymmetricKey   string        // Symmetric key for token signing
+	TokenType           string // Type of token used (e.g., "Bearer")
+	TokenSymmetricKey   string // Symmetric key for token signing
+	TokenBaseCookieName string
 	TokenExpiryDuration time.Duration // Duration before the token expires
 
 	// CORS Configuration
@@ -97,6 +98,7 @@ func LoadMainConfiguration(configFile string) error {
 	TokenType = viper.GetString("token.type")
 	TokenSymmetricKey = viper.GetString("token.symmetric_key")
 	TokenExpiryDuration = viper.GetDuration("token.access_duration")
+	TokenBaseCookieName = viper.GetString("token.base_cookie_name")
 
 	log.Println("Configuration loaded for environment:", Environment)
 	log.Println("Configuration loaded for database:", DatabaseType)

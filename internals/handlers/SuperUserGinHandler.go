@@ -84,7 +84,7 @@ func (h *SuperUserGinHandler) LogInSuperUserHandler(c *gin.Context) {
 	}
 
 	// Generate dynamic cookie name using the superuser's role
-	cookieName := loggedInSuperUser.Role + "_SuperUserAuthorizationToken"
+	cookieName := loggedInSuperUser.Role + "|_|" + configs.TokenBaseCookieName
 
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie(cookieName, loggedInSuperUser.Token, int(configs.TokenExpiryDuration.Seconds()), "/", "", false, true)
