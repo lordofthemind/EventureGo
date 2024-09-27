@@ -4,8 +4,9 @@ application:
   database_type: "postgres"   # options: postgres, mongodb, inmemory
   server_type: "gin"
   allowed_roles:
-    - "Admin"
     - "SuperUser"
+    - "Admin"
+    - "Moderator"
     - "User"
     - "Guest"
 

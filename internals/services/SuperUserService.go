@@ -140,3 +140,38 @@ func (s *SuperUserService) ResetPassword(ctx context.Context, token, newPassword
 	// Update the superuser record
 	return s.repo.UpdateSuperUser(ctx, superUser)
 }
+
+// SeedSuperUser seeds a superuser based on the given request data
+func (s *SuperUserService) SeedSuperUser(ctx context.Context, req *utils.RegisterSuperuserRequest) error {
+	// Check if the superuser already exists by email or username
+	existingSuperUserByEmail, err := s.repo.FindSuperUserByEmail(ctx, req.Email)
+	if err == nil && existingSuperUserByEmail != nil {
+		log.Println("SuperUser with the provided email already exists, skipping seeding.")
+		return nil
+	}
+
+	existingSuperUserByUsername, err := s.repo.FindSuperUserByUsername(ctx, req.Username)
+	if err == nil && existingSuperUserByUsername != nil {
+		log.Println("SuperUser with the provided username already exists, skipping seeding.")
+		return nil
+	}
+
+	// Hash the password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return newerrors.Wrap(err, "failed to hash password")
+	}
+
+	role := "SuperUser"
+	// Create a new SuperUser entity
+	superUserEntity := types.NewSuperUser(req.Email, req.FullName, req.Username, string(hashedPassword), role)
+
+	// Store the SuperUser in the repository using the SuperUserService
+	_, err = s.repo.CreateSuperUser(ctx, superUserEntity)
+	if err != nil {
+		return newerrors.Wrap(err, "failed to create superuser")
+	}
+
+	log.Println("SuperUser seeded successfully.")
+	return nil
+}
