@@ -53,7 +53,6 @@ func (h *SuperUserGinHandler) RegisterSuperUserHandler(c *gin.Context) {
 }
 
 // LogInSuperUserHandler handles the login of a superuser
-// LogInSuperUserHandler handles the login of a superuser
 func (h *SuperUserGinHandler) LogInSuperUserHandler(c *gin.Context) {
 	var req utils.LogInSuperuserRequest
 	// Bind and validate request payload

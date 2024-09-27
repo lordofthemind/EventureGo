@@ -21,12 +21,12 @@ type LogInSuperuserRequest struct {
 
 // LoginSuperuserResponse represents the response structure for a successful login.
 type LoginSuperuserResponse struct {
-	ID           uuid.UUID `json:"id"`             // Unique identifier of the superuser
+	ID           uuid.UUID `json:"-"`              // Unique identifier of the superuser
 	Email        string    `json:"email"`          // Email of the superuser
 	Username     string    `json:"username"`       // Username of the superuser
 	FullName     string    `json:"full_name"`      // Full name of the superuser
-	Role         string    `json:"role"`           // Role assigned to the new superuser
-	Token        string    `json:"token"`          // Authentication token for the session
+	Role         string    `json:"-"`              // Omit role from the response
+	Token        string    `json:"-"`              // Omit token from the response
 	Is2FAEnabled bool      `json:"is_2fa_enabled"` // Indicates if two-factor authentication is enabled
 }
 
