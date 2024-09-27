@@ -100,3 +100,82 @@ func (h *SuperUserFiberHandler) LogInSuperUserHandler(c *fiber.Ctx) error {
 	response := responses.NewFiberResponse(c, fiber.StatusOK, "Login successful", loggedInSuperUser, nil)
 	return c.Status(fiber.StatusOK).JSON(response)
 }
+
+// LogOutSuperUserHandler handles the logout of a superuser
+func (h *SuperUserFiberHandler) LogOutSuperUserHandler(c *fiber.Ctx) error {
+	// Clear the authorization cookie
+	c.Cookie(&fiber.Cookie{
+		Name:     "SuperUserAuthorizationToken",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		Path:     "/",
+		HTTPOnly: true,
+		SameSite: "Lax",
+	})
+
+	// Use standardized response for successful logout
+	response := responses.NewFiberResponse(c, fiber.StatusOK, "Logout successful", nil, nil)
+	return c.Status(fiber.StatusOK).JSON(response)
+}
+
+// PasswordResetRequestHandler handles the request to send a password reset email
+func (h *SuperUserFiberHandler) PasswordResetRequestHandler(c *fiber.Ctx) error {
+	var request struct {
+		Email    string `json:"email" binding:"omitempty,email" validate:"omitempty,email"`
+		Username string `json:"username" binding:"omitempty,min=3" validate:"omitempty,min=3"`
+	}
+
+	// Parse and validate the request payload
+	if err := c.BodyParser(&request); err != nil {
+		response := responses.NewFiberResponse(c, fiber.StatusBadRequest, "Invalid email or username", nil, err.Error())
+		return c.Status(fiber.StatusBadRequest).JSON(response)
+	}
+
+	// Ensure that either email or username is provided
+	if request.Email == "" && request.Username == "" {
+		response := responses.NewFiberResponse(c, fiber.StatusBadRequest, "Either email or username is required", nil, nil)
+		return c.Status(fiber.StatusBadRequest).JSON(response)
+	}
+
+	// Call the service to send a password reset email
+	err := h.service.SendPasswordResetEmailWithUsernameOrEmail(c.Context(), request.Email, request.Username)
+	if err != nil {
+		response := responses.NewFiberResponse(c, fiber.StatusInternalServerError, "Failed to send reset email", nil, err.Error())
+		return c.Status(fiber.StatusInternalServerError).JSON(response)
+	}
+
+	// Use standardized response for successful email request
+	response := responses.NewFiberResponse(c, fiber.StatusOK, "Password reset email sent successfully", nil, nil)
+	return c.Status(fiber.StatusOK).JSON(response)
+}
+
+// PasswordResetHandler handles the password reset using a token
+func (h *SuperUserFiberHandler) PasswordResetHandler(c *fiber.Ctx) error {
+	var request struct {
+		Password string `json:"password" binding:"required,min=8"`
+	}
+
+	// Parse and validate the request payload
+	if err := c.BodyParser(&request); err != nil {
+		response := responses.NewFiberResponse(c, fiber.StatusBadRequest, "Invalid password", nil, err.Error())
+		return c.Status(fiber.StatusBadRequest).JSON(response)
+	}
+
+	// Extract the reset token from the URL parameters
+	token := c.Params("token")
+	if token == "" {
+		response := responses.NewFiberResponse(c, fiber.StatusBadRequest, "Invalid reset token", nil, nil)
+		return c.Status(fiber.StatusBadRequest).JSON(response)
+	}
+
+	// Call the service to reset the password
+	err := h.service.ResetPassword(c.Context(), token, request.Password)
+	if err != nil {
+		response := responses.NewFiberResponse(c, fiber.StatusInternalServerError, "Failed to reset password", nil, err.Error())
+		return c.Status(fiber.StatusInternalServerError).JSON(response)
+	}
+
+	// Use standardized response for successful password reset
+	response := responses.NewFiberResponse(c, fiber.StatusOK, "Password reset successful", nil, nil)
+	return c.Status(fiber.StatusOK).JSON(response)
+}

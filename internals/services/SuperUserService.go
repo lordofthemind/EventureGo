@@ -82,8 +82,7 @@ func (s *SuperUserService) LogInSuperuser(ctx context.Context, loginRequest *uti
 	}, nil
 }
 
-// SendPasswordResetEmail sends a reset token (placeholder functionality).
-// SendPasswordResetEmailOrUsername sends a reset token based on email or username.
+// SendPasswordResetEmailWithUsernameOrEmail sends a reset token based on email or username.
 func (s *SuperUserService) SendPasswordResetEmailWithUsernameOrEmail(ctx context.Context, email string, username string) error {
 	var superUser *types.SuperUserType
 	var err error

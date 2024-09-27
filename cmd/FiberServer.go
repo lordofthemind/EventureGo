@@ -1,12 +1,14 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/lordofthemind/EventureGo/configs"
 	"github.com/lordofthemind/EventureGo/internals/handlers"
 	"github.com/lordofthemind/EventureGo/internals/initializers"
+	"github.com/lordofthemind/EventureGo/internals/middlewares"
 	"github.com/lordofthemind/EventureGo/internals/repositories"
 	"github.com/lordofthemind/EventureGo/internals/repositories/inmemory"
 	"github.com/lordofthemind/EventureGo/internals/repositories/mongodb"
@@ -44,6 +46,7 @@ func FiberServer() {
 		superUserRepository = inmemory.NewInMemorySuperUserRepository()
 
 	case "postgres":
+		// Check if GORM PostgreSQL connection is initialized
 		if configs.GormDB == nil {
 			log.Fatalf("Postgres connection was not initialized")
 		}
@@ -80,10 +83,13 @@ func FiberServer() {
 	// Set up Fiber routes
 	app := fiber.New()
 
-	routes.SetupSuperUserFiberRoutes(app, superUserHandler)
+	// Apply middleware globally or for specific routes
+	app.Use(middlewares.RequestIDFiberMiddleware())
 
-	// Start the Fiber server
-	serverAddress := ":9090" // This can be configurable
+	routes.SetupSuperUserFiberRoutes(app, superUserHandler, tokenManager)
+
+	// Dynamically fetch server address and port from the configuration
+	serverAddress := fmt.Sprintf(":%d", configs.ServerPort)
 	if err := app.Listen(serverAddress); err != nil {
 		log.Fatalf("Failed to start Fiber server: %v", err)
 	}

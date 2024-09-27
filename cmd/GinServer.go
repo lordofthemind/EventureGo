@@ -82,7 +82,10 @@ func GinServer() {
 
 	// Set up Gin routes
 	router := gin.Default()
+
+	// Apply middleware globally or for specific routes
 	router.Use(middlewares.RequestIDGinMiddleware())
+
 	routes.SetupSuperUserGinRoutes(router, superUserHandler, tokenManager)
 
 	// Dynamically fetch server address and port from the configuration

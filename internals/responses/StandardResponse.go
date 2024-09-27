@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 // StandardResponse defines the structure for API responses
@@ -22,7 +23,7 @@ func NewGinResponse(c *gin.Context, status int, message string, data interface{}
 	// Retrieve request ID from context, if available
 	requestID, exists := c.Get("RequestID")
 	if !exists {
-		requestID = ""
+		requestID = uuid.New().String()
 	}
 
 	return StandardResponse{
