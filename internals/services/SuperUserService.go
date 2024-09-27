@@ -143,17 +143,16 @@ func (s *SuperUserService) ResetPassword(ctx context.Context, token, newPassword
 
 // SeedSuperUser seeds a superuser based on the given request data
 func (s *SuperUserService) SeedSuperUser(ctx context.Context, req *utils.RegisterSuperuserRequest) error {
-	// Check if the superuser already exists by email or username
+	// Check if the superuser already exists by email
 	existingSuperUserByEmail, err := s.repo.FindSuperUserByEmail(ctx, req.Email)
 	if err == nil && existingSuperUserByEmail != nil {
-		log.Println("SuperUser with the provided email already exists, skipping seeding.")
-		return nil
+		return newerrors.NewValidationError("SuperUser with the provided email already exists")
 	}
 
+	// Check if the superuser already exists by username
 	existingSuperUserByUsername, err := s.repo.FindSuperUserByUsername(ctx, req.Username)
 	if err == nil && existingSuperUserByUsername != nil {
-		log.Println("SuperUser with the provided username already exists, skipping seeding.")
-		return nil
+		return newerrors.NewValidationError("SuperUser with the provided username already exists")
 	}
 
 	// Hash the password
@@ -172,6 +171,5 @@ func (s *SuperUserService) SeedSuperUser(ctx context.Context, req *utils.Registe
 		return newerrors.Wrap(err, "failed to create superuser")
 	}
 
-	log.Println("SuperUser seeded successfully.")
 	return nil
 }

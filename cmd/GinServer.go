@@ -78,12 +78,12 @@ func GinServer() {
 
 	// Initialize service and handler
 	superUserService := services.NewSuperUserService(superUserRepository, tokenManager)
+
+	// Start Gin server after seeding
 	superUserHandler := handlers.NewSuperUserGinHandler(superUserService)
 
-	// Set up Gin routes
 	router := gin.Default()
 
-	// Apply middleware globally or for specific routes
 	router.Use(middlewares.RequestIDGinMiddleware())
 
 	routes.SetupSuperUserGinRoutes(router, superUserHandler, tokenManager)
