@@ -21,8 +21,10 @@
 │   ├── initializers
 │   │   └── DatabaseInitializer.go
 │   ├── middlewares
-│   │   ├── JWTMiddleware.go
-│   │   └── RequestIDMiddlware.go
+│   │   ├── AuthTokenFiberMiddleware.go
+│   │   ├── AuthTokenGinMiddleware.go
+│   │   ├── RequestIDFiberMiddleware.go
+│   │   └── RequestIDGinMiddleware.go
 │   ├── newerrors
 │   │   └── SuperUserError.go
 │   ├── repositories
@@ -44,8 +46,7 @@
 │   ├── types
 │   │   └── SuperUserType.go
 │   └── utils
-│       ├── LogInSuperuserUtils.go
-│       └── RegisterSuperUserUtils.go
+│       └── SuperUserUtils.go
 ├── logs
 ├── main.go
 ├── pkgs
@@ -56,4 +57,4 @@
 │   └── main
 └── tree.txt
 
-26 directories, 31 files
+26 directories, 32 files
