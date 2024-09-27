@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"net/http"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/lordofthemind/EventureGo/configs"
@@ -77,14 +77,24 @@ func (h *SuperUserFiberHandler) LogInSuperUserHandler(c *fiber.Ctx) error {
 		}
 	}
 
+	// Generate auth token
 	authToken, err := h.tokenManager.GenerateToken(loggedInSuperUser.Username, configs.TokenExpiryDuration)
 	if err != nil {
-		response := responses.NewFiberResponse(c, http.StatusInternalServerError, "Failed to generate token", nil, err)
+		response := responses.NewFiberResponse(c, fiber.StatusInternalServerError, "Failed to generate token", nil, err.Error())
 		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
 
-	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("SuperUserAuthorizationToken", authToken, int(configs.TokenExpiryDuration.Seconds()), "/", "", false, true)
+	// Create a cookie and set it in the response
+	cookie := new(fiber.Cookie)
+	cookie.Name = "SuperUserAuthorizationToken"
+	cookie.Value = authToken
+	cookie.Expires = time.Now().Add(configs.TokenExpiryDuration)
+	cookie.Path = "/"
+	cookie.HTTPOnly = true
+	cookie.SameSite = "Lax"
+	cookie.Secure = false // In production, set this to true if using HTTPS
+
+	c.Cookie(cookie)
 
 	// Use standardized response for successful login
 	response := responses.NewFiberResponse(c, fiber.StatusOK, "Login successful", loggedInSuperUser, nil)

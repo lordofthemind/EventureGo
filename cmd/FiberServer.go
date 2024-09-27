@@ -13,13 +13,14 @@ import (
 	"github.com/lordofthemind/EventureGo/internals/repositories/postgresdb"
 	"github.com/lordofthemind/EventureGo/internals/routes"
 	"github.com/lordofthemind/EventureGo/internals/services"
+	"github.com/lordofthemind/mygopher/gopherlogger"
 	"github.com/lordofthemind/mygopher/gophermongo"
-	"github.com/lordofthemind/mygopher/mygopherlogger"
+	"github.com/lordofthemind/mygopher/gophertoken"
 )
 
 func FiberServer() {
 	// Set up logger
-	logFile, err := mygopherlogger.SetUpLoggerFile("fiberServer.log")
+	logFile, err := gopherlogger.SetUpLoggerFile("fiberServer.log")
 	if err != nil {
 		log.Fatalf("Failed to initialize logger: %v", err)
 	}
@@ -38,16 +39,16 @@ func FiberServer() {
 	var superUserRepository repositories.SuperUserRepositoryInterface
 
 	switch configs.DatabaseType {
+	case "inmemory":
+		// Initialize Postgres repository (not shown in your example, but you can add it here)
+		superUserRepository = inmemory.NewInMemorySuperUserRepository()
+
 	case "postgres":
 		if configs.GormDB == nil {
 			log.Fatalf("Postgres connection was not initialized")
 		}
 		// Initialize Postgres repository (not shown in your example, but you can add it here)
 		superUserRepository = postgresdb.NewPostgresSuperUserRepository(configs.GormDB) // Example
-	case "inmemory":
-
-		// Initialize Postgres repository (not shown in your example, but you can add it here)
-		superUserRepository = inmemory.NewInMemorySuperUserRepository()
 
 	case "mongodb":
 		if configs.MongoClient == nil {
@@ -66,9 +67,15 @@ func FiberServer() {
 		log.Fatalf("Invalid database configuration")
 	}
 
+	// Use the new NewTokenManager function
+	tokenManager, err := gophertoken.NewTokenManager(configs.TokenType, configs.TokenSymmetricKey)
+	if err != nil {
+		log.Fatalf("Failed to initiate token: %v", err)
+	}
+
 	// Initialize service and handler
 	superUserService := services.NewSuperUserService(superUserRepository)
-	superUserHandler := handlers.NewSuperUserFiberHandler(superUserService)
+	superUserHandler := handlers.NewSuperUserFiberHandler(superUserService, tokenManager)
 
 	// Set up Fiber routes
 	app := fiber.New()

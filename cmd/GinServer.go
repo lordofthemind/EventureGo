@@ -15,14 +15,14 @@ import (
 	"github.com/lordofthemind/EventureGo/internals/repositories/postgresdb"
 	"github.com/lordofthemind/EventureGo/internals/routes"
 	"github.com/lordofthemind/EventureGo/internals/services"
+	"github.com/lordofthemind/mygopher/gopherlogger"
 	"github.com/lordofthemind/mygopher/gophermongo"
 	"github.com/lordofthemind/mygopher/gophertoken"
-	"github.com/lordofthemind/mygopher/mygopherlogger"
 )
 
 func GinServer() {
 	// Set up logger
-	logFile, err := mygopherlogger.SetUpLoggerFile("ginServer.log")
+	logFile, err := gopherlogger.SetUpLoggerFile("ginServer.log")
 	if err != nil {
 		log.Fatalf("Failed to initialize logger: %v", err)
 	}
@@ -41,6 +41,10 @@ func GinServer() {
 	var superUserRepository repositories.SuperUserRepositoryInterface
 
 	switch configs.DatabaseType {
+	case "inmemory":
+		// Initialize In-memory repository
+		superUserRepository = inmemory.NewInMemorySuperUserRepository()
+
 	case "postgres":
 		// Check if GORM PostgreSQL connection is initialized
 		if configs.GormDB == nil {
@@ -61,10 +65,6 @@ func GinServer() {
 		// Similarly, if you need to set up another repository with a different database:
 		// eventDB := gophermongo.GetDatabase(configs.MongoClient, "events")
 		// eventRepository = mongodb.NewMongoEventRepository(eventDB) // Example
-
-	case "inmemory":
-		// Initialize In-memory repository
-		superUserRepository = inmemory.NewInMemorySuperUserRepository()
 
 	default:
 		log.Fatalf("Invalid database configuration: %s", configs.DatabaseType)

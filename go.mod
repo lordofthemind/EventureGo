@@ -6,7 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/google/uuid v1.6.0
-	github.com/lordofthemind/mygopher v0.1.0
+	github.com/lordofthemind/mygopher/gopherlogger v0.0.0-20240919183559-148b53310041
 	github.com/lordofthemind/mygopher/gophermongo v0.0.0-20240919183559-148b53310041
 	github.com/lordofthemind/mygopher/gopherpostgres v0.0.0-20240919183559-148b53310041
 	github.com/lordofthemind/mygopher/gophertoken v0.0.0-20240919183559-148b53310041
