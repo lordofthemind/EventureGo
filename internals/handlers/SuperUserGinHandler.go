@@ -86,7 +86,15 @@ func (h *SuperUserGinHandler) LogInSuperUserHandler(c *gin.Context) {
 	cookieName := loggedInSuperUser.Role + "|_|" + configs.TokenBaseCookieName
 
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie(cookieName, loggedInSuperUser.Token, int(configs.TokenExpiryDuration.Seconds()), "/", "", false, true)
+	c.SetCookie(
+		cookieName,
+		loggedInSuperUser.Token,
+		int(configs.TokenExpiryDuration.Seconds()),
+		"/",
+		"",
+		configs.SecureCookieHTTPS,
+		true,
+	)
 
 	// Use standardized response for successful login
 	response := responses.NewGinResponse(c, http.StatusOK, "Login successful", loggedInSuperUser, nil)
@@ -94,8 +102,21 @@ func (h *SuperUserGinHandler) LogInSuperUserHandler(c *gin.Context) {
 }
 
 func (h *SuperUserGinHandler) LogOutSuperUserHandler(c *gin.Context) {
-	c.SetCookie("SuperUserAuthorizationToken", "", -1, "/", "", false, true)
-	// Use standardized response for successful login
+	// Extract the role from the context
+	role, exists := c.Get("role")
+	if !exists {
+		response := responses.NewGinResponse(c, http.StatusBadRequest, "Role not found in context", nil, nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	// Create the cookie name using the role and the base cookie name
+	cookieName := role.(string) + "|_|" + configs.TokenBaseCookieName
+
+	// Clear the cookie by setting its expiration to a past time
+	c.SetCookie(cookieName, "", -1, "/", "", false, true)
+
+	// Use standardized response for successful logout
 	response := responses.NewGinResponse(c, http.StatusOK, "Logout successful", nil, nil)
 	c.JSON(http.StatusOK, response)
 }

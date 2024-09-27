@@ -21,6 +21,7 @@ token:
   symmetric_key: "qwertyuiopasdfghjklzxcvbnmqwerty"
   access_duration: "15m"
   base_cookie_name: "UserEventureAuthorisationToken"
+  secure_cookie_https: false # Set to true if using HTTPS in production
 
 # Logging Configuration (Common across environments)
 logging:

@@ -77,22 +77,18 @@ func (h *SuperUserFiberHandler) LogInSuperUserHandler(c *fiber.Ctx) error {
 		}
 	}
 
-	// Generate auth token
-	authToken, err := h.tokenManager.GenerateToken(loggedInSuperUser.Username, configs.TokenExpiryDuration)
-	if err != nil {
-		response := responses.NewFiberResponse(c, fiber.StatusInternalServerError, "Failed to generate token", nil, err.Error())
-		return c.Status(fiber.StatusInternalServerError).JSON(response)
-	}
+	// Create a cookie name using the superuser's role
+	cookieName := loggedInSuperUser.Role + "|_|" + configs.TokenBaseCookieName
 
 	// Create a cookie and set it in the response
 	cookie := new(fiber.Cookie)
-	cookie.Name = "SuperUserAuthorizationToken"
-	cookie.Value = authToken
+	cookie.Name = cookieName
+	cookie.Value = loggedInSuperUser.Token
 	cookie.Expires = time.Now().Add(configs.TokenExpiryDuration)
 	cookie.Path = "/"
 	cookie.HTTPOnly = true
 	cookie.SameSite = "Lax"
-	cookie.Secure = false // In production, set this to true if using HTTPS
+	cookie.Secure = configs.SecureCookieHTTPS
 
 	c.Cookie(cookie)
 
@@ -103,11 +99,21 @@ func (h *SuperUserFiberHandler) LogInSuperUserHandler(c *fiber.Ctx) error {
 
 // LogOutSuperUserHandler handles the logout of a superuser
 func (h *SuperUserFiberHandler) LogOutSuperUserHandler(c *fiber.Ctx) error {
+	// Extract the role from the context
+	role, exists := c.Locals("role").(string)
+	if !exists {
+		response := responses.NewFiberResponse(c, fiber.StatusBadRequest, "Role not found in context", nil, nil)
+		return c.Status(fiber.StatusBadRequest).JSON(response)
+	}
+
+	// Create the cookie name using the role and the base cookie name
+	cookieName := role + "|_|" + configs.TokenBaseCookieName
+
 	// Clear the authorization cookie
 	c.Cookie(&fiber.Cookie{
-		Name:     "SuperUserAuthorizationToken",
+		Name:     cookieName,
 		Value:    "",
-		Expires:  time.Now().Add(-time.Hour),
+		Expires:  time.Now().Add(-time.Hour), // Set expiration to a past time to clear the cookie
 		Path:     "/",
 		HTTPOnly: true,
 		SameSite: "Lax",
