@@ -8,18 +8,15 @@ import (
 	"github.com/lordofthemind/EventureGo/internals/responses"
 	"github.com/lordofthemind/EventureGo/internals/services"
 	"github.com/lordofthemind/EventureGo/internals/utils"
-	"github.com/lordofthemind/mygopher/gophertoken"
 )
 
 type SuperUserFiberHandler struct {
-	service      services.SuperUserServiceInterface
-	tokenManager gophertoken.TokenManager
+	service services.SuperUserServiceInterface
 }
 
-func NewSuperUserFiberHandler(service services.SuperUserServiceInterface, tokenManager gophertoken.TokenManager) *SuperUserFiberHandler {
+func NewSuperUserFiberHandler(service services.SuperUserServiceInterface) *SuperUserFiberHandler {
 	return &SuperUserFiberHandler{
-		service:      service,
-		tokenManager: tokenManager,
+		service: service,
 	}
 }
 

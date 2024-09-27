@@ -8,18 +8,15 @@ import (
 	"github.com/lordofthemind/EventureGo/internals/responses"
 	"github.com/lordofthemind/EventureGo/internals/services"
 	"github.com/lordofthemind/EventureGo/internals/utils"
-	"github.com/lordofthemind/mygopher/gophertoken"
 )
 
 type SuperUserGinHandler struct {
-	service      services.SuperUserServiceInterface
-	tokenManager gophertoken.TokenManager
+	service services.SuperUserServiceInterface
 }
 
-func NewSuperUserGinHandler(service services.SuperUserServiceInterface, tokenManager gophertoken.TokenManager) *SuperUserGinHandler {
+func NewSuperUserGinHandler(service services.SuperUserServiceInterface) *SuperUserGinHandler {
 	return &SuperUserGinHandler{
-		service:      service,
-		tokenManager: tokenManager,
+		service: service,
 	}
 }
 
