@@ -63,10 +63,6 @@ func SuperUserSeeder() {
 		superUserDB := gophermongo.GetDatabase(configs.MongoClient, "superuser")
 		superUserRepository = mongodb.NewMongoSuperUserRepository(superUserDB)
 
-		// Similarly, if you need to set up another repository with a different database:
-		// eventDB := gophermongo.GetDatabase(configs.MongoClient, "events")
-		// eventRepository = mongodb.NewMongoEventRepository(eventDB) // Example
-
 	default:
 		log.Fatalf("Invalid database configuration: %s", configs.DatabaseType)
 	}
@@ -77,12 +73,11 @@ func SuperUserSeeder() {
 		log.Fatalf("Failed to initiate token: %v", err)
 	}
 
-	// Initialize service and handler
+	// Initialize SuperUser service
 	superUserService := services.NewSuperUserService(superUserRepository, tokenManager)
 
 	// Seed SuperUsers before starting the server
 	seedSuperUsers(superUserService)
-
 }
 
 func seedSuperUsers(service services.SuperUserServiceInterface) {
@@ -96,23 +91,23 @@ func seedSuperUsers(service services.SuperUserServiceInterface) {
 
 		// Get Email
 		fmt.Print("Enter SuperUser Email: ")
-		email, _ := reader.ReadString('\n')
-		req.Email = strings.TrimSpace(email)
+		email, _ := readInput(reader)
+		req.Email = email
 
 		// Get Full Name
 		fmt.Print("Enter SuperUser Full Name: ")
-		fullName, _ := reader.ReadString('\n')
-		req.FullName = strings.TrimSpace(fullName)
+		fullName, _ := readInput(reader)
+		req.FullName = fullName
 
 		// Get Username
 		fmt.Print("Enter SuperUser Username: ")
-		username, _ := reader.ReadString('\n')
-		req.Username = strings.TrimSpace(username)
+		username, _ := readInput(reader)
+		req.Username = username
 
 		// Get Password
 		fmt.Print("Enter SuperUser Password: ")
-		password, _ := reader.ReadString('\n')
-		req.Password = strings.TrimSpace(password)
+		password, _ := readInput(reader)
+		req.Password = password
 
 		// Seed the SuperUser
 		err := service.SeedSuperUser(ctx, req)
@@ -124,13 +119,21 @@ func seedSuperUsers(service services.SuperUserServiceInterface) {
 
 		// Ask if user wants to seed another
 		fmt.Print("Do you want to seed another SuperUser? (y/n): ")
-		another, _ := reader.ReadString('\n')
-		another = strings.TrimSpace(strings.ToLower(another))
-
-		if another != "y" {
+		another, _ := readInput(reader)
+		if strings.ToLower(another) != "y" {
 			break
 		}
 	}
 
 	fmt.Println("Seeding process completed.")
+}
+
+// readInput reads input from the reader and trims spaces and newlines
+func readInput(reader *bufio.Reader) (string, error) {
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		return "", err
+	}
+	// Trim spaces and newlines from the input
+	return strings.TrimSpace(input), nil
 }
