@@ -12,9 +12,10 @@ import (
 
 var (
 	// Server Configuration
-	ServerHost  string //
-	ServerPort  int    // The port the server listens on
-	Environment string // The environment (e.g., "development", "production")
+	ServerHost   string   //
+	ServerPort   int      // The port the server listens on
+	Environment  string   // The environment (e.g., "development", "production")
+	AllowedRoles []string // Predefined list of allowed roles
 
 	// Database Configuration
 	PostgresURL  string        // URL for connecting to the PostgreSQL database
@@ -56,6 +57,7 @@ func LoadMainConfiguration(configFile string) error {
 	// Fetch environment and database type from the config file
 	Environment = viper.GetString("application.environment")
 	DatabaseType = viper.GetString("application.database_type")
+	AllowedRoles = viper.GetStringSlice("application.allowed_roles")
 
 	// Load environment-specific configurations
 	viper.Set("active_environment", Environment)

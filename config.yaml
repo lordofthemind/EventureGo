@@ -3,6 +3,11 @@ application:
   environment: "development"  # options: development, production, testing, staging
   database_type: "postgres"   # options: postgres, mongodb, inmemory
   server_type: "gin"
+  allowed_roles:
+    - "Admin"
+    - "SuperUser"
+    - "User"
+    - "Guest"
 
 # Server Configuration (Common across environments)
 server:

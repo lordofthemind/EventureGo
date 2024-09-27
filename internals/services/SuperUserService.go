@@ -39,8 +39,9 @@ func (s *SuperUserService) RegisterSuperUser(ctx context.Context, req *utils.Reg
 		return nil, newerrors.Wrap(err, "failed to hash password")
 	}
 
+	role := "Guest"
 	// Create a new SuperUser entity
-	superUserEntity := types.NewSuperUser(req.Email, req.FullName, req.Username, string(hashedPassword))
+	superUserEntity := types.NewSuperUser(req.Email, req.FullName, req.Username, string(hashedPassword), role)
 
 	// Store the SuperUser in the repository
 	createdSuperUser, err := s.repo.CreateSuperUser(ctx, superUserEntity)

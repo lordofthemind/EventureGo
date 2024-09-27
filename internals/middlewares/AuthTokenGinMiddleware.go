@@ -12,14 +12,12 @@ import (
 // AuthTokenGinMiddleware checks for a role-based token and authorizes users
 func AuthTokenGinMiddleware(tokenManager gophertoken.TokenManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Iterate over the list of possible roles
-		roles := []string{"Admin", "User", "SuperUser"} // Add any additional roles here
 		var role string
 		var token string
 		var found bool
 
 		// Loop through possible roles to find the correct token
-		for _, r := range roles {
+		for _, r := range configs.AllowedRoles {
 			cookieName := r + "|_|" + configs.TokenBaseCookieName
 			if cookieToken, err := c.Cookie(cookieName); err == nil {
 				token = cookieToken

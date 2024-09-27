@@ -4,11 +4,13 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lordofthemind/EventureGo/configs"
 )
 
+// SuperUserType defines the structure for a superuser
 type SuperUserType struct {
 	ID               uuid.UUID `bson:"_id,omitempty" json:"id,omitempty" gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
-	Role             string    `bson:"role" json:"role" validate:"required" gorm:"not null;default:guest"`
+	Role             string    `bson:"role" json:"role" validate:"required" gorm:"not null"`
 	Email            string    `bson:"email" json:"email" validate:"required,email" gorm:"unique;not null"`
 	FullName         string    `bson:"full_name" json:"full_name" validate:"required,min=3,max=32" gorm:"not null"`
 	Username         string    `bson:"username" json:"username" validate:"required,min=3,max=32,alphanum" gorm:"unique;not null"`
@@ -22,15 +24,25 @@ type SuperUserType struct {
 }
 
 // NewSuperUser creates a new instance of SuperUserType
-func NewSuperUser(email, fullName, username, hashedPassword string) *SuperUserType {
+func NewSuperUser(email, fullName, username, hashedPassword, role string) *SuperUserType {
 	return &SuperUserType{
 		ID:             uuid.New(),
 		Email:          email,
 		FullName:       fullName,
 		Username:       username,
 		HashedPassword: hashedPassword,
-		Role:           "guest", // default role
+		Role:           validateRole(role),
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),
 	}
+}
+
+// ValidateRole checks if the provided role is in the allowed roles
+func validateRole(role string) string {
+	for _, allowedRole := range configs.AllowedRoles {
+		if role == allowedRole {
+			return role
+		}
+	}
+	return "Guest"
 }
