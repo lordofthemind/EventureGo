@@ -1,11 +1,13 @@
 .
 ├── Changelog.md
+├── Future.md
 ├── Makefile
 ├── Readme.md
 ├── bin
 ├── cmd
 │   ├── FiberServer.go
-│   └── GinServer.go
+│   ├── GinServer.go
+│   └── SuperUserSeeder.go
 ├── config.yaml
 ├── configs
 │   └── MainConfiguration.go
@@ -57,4 +59,4 @@
 │   └── main
 └── tree.txt
 
-26 directories, 32 files
+26 directories, 34 files
