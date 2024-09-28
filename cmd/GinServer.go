@@ -76,12 +76,16 @@ func GinServer() {
 		log.Fatalf("Failed to initiate token: %v", err)
 	}
 
-	// Initialize service
-	emailService := services.NewEmailService(configs.SMTPHost, configs.SMTPPort, configs.EmailUsername, configs.EmailPassword)
+	// Initialize services
+	emailService := services.NewEmailService(
+		configs.SMTPHost,
+		configs.SMTPPort,
+		configs.EmailUsername,
+		configs.EmailPassword,
+	)
+	superUserService := services.NewSuperUserService(superUserRepository, tokenManager, emailService)
 
-	superUserService := services.NewSuperUserService(superUserRepository, tokenManager)
-
-	// Start Gin server after seeding
+	// Initialize handler
 	superUserHandler := handlers.NewSuperUserGinHandler(superUserService)
 
 	router := gin.Default()

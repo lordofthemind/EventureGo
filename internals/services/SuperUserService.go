@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -17,12 +18,18 @@ import (
 type SuperUserService struct {
 	repo         repositories.SuperUserRepositoryInterface
 	tokenManager gophertoken.TokenManager
+	emailService EmailServiceInterface
 }
 
-func NewSuperUserService(repo repositories.SuperUserRepositoryInterface, tokenManager gophertoken.TokenManager) SuperUserServiceInterface {
+func NewSuperUserService(
+	repo repositories.SuperUserRepositoryInterface,
+	tokenManager gophertoken.TokenManager,
+	emailService EmailServiceInterface,
+) SuperUserServiceInterface {
 	return &SuperUserService{
 		repo:         repo,
 		tokenManager: tokenManager,
+		emailService: emailService,
 	}
 }
 
@@ -93,7 +100,6 @@ func (s *SuperUserService) LogInSuperuser(ctx context.Context, loginRequest *uti
 	}, nil
 }
 
-// SendPasswordResetEmailWithUsernameOrEmail sends a reset token based on email or username.
 func (s *SuperUserService) SendPasswordResetEmailWithUsernameOrEmail(ctx context.Context, email string, username string) error {
 	var superUser *types.SuperUserType
 	var err error
@@ -112,8 +118,14 @@ func (s *SuperUserService) SendPasswordResetEmailWithUsernameOrEmail(ctx context
 	}
 
 	// Generate and send a reset token
-	resetToken := utils.GenerateResetToken() // Placeholder token generation
+	resetToken := utils.GenerateResetToken()
 	log.Printf("Sending password reset token to %s: %s\n", superUser.Email, resetToken)
+
+	// Send password reset email using EmailService
+	err = s.emailService.SendTextEmail([]string{superUser.Email}, "Password Reset", fmt.Sprintf("Your reset token is: %s", resetToken))
+	if err != nil {
+		return newerrors.Wrap(err, "failed to send reset email")
+	}
 
 	// Store the reset token in the repository
 	return s.repo.UpdateResetToken(ctx, superUser.ID, resetToken)

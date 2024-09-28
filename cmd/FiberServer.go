@@ -76,8 +76,15 @@ func FiberServer() {
 		log.Fatalf("Failed to initiate token: %v", err)
 	}
 
-	// Initialize service and handler
-	superUserService := services.NewSuperUserService(superUserRepository, tokenManager)
+	// Initialize services
+	emailService := services.NewEmailService(
+		configs.SMTPHost,
+		configs.SMTPPort,
+		configs.EmailUsername,
+		configs.EmailPassword,
+	)
+	superUserService := services.NewSuperUserService(superUserRepository, tokenManager, emailService)
+
 	superUserHandler := handlers.NewSuperUserFiberHandler(superUserService)
 
 	// Set up Fiber routes
