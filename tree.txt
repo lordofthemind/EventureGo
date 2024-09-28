@@ -16,6 +16,10 @@
 ├── examples
 ├── go.mod
 ├── go.sum
+├── htmltemplates
+│   ├── LoadAndRenderTemplate.go
+│   └── templates
+│       └── welcome_email.html
 ├── internals
 │   ├── handlers
 │   │   ├── SuperUserFiberHandler.go
@@ -43,8 +47,6 @@
 │   │   ├── SuperUserFiberRoutes.go
 │   │   └── SuperUserGinRoutes.go
 │   ├── services
-│   │   ├── EmailService.go
-│   │   ├── EmailServiceInterface.go
 │   │   ├── SuperUserService.go
 │   │   └── SuperUserServiceInterface.go
 │   ├── types
@@ -61,4 +63,4 @@
 │   └── main
 └── tree.txt
 
-26 directories, 36 files
+28 directories, 36 files
