@@ -43,8 +43,10 @@
 │   │   ├── SuperUserFiberRoutes.go
 │   │   └── SuperUserGinRoutes.go
 │   ├── services
+│   │   ├── EmailService.go
+│   │   ├── EmailServiceInterface.go
 │   │   ├── SuperUserService.go
-│   │   └── SuperUserServiceRepository.go
+│   │   └── SuperUserServiceInterface.go
 │   ├── types
 │   │   └── SuperUserType.go
 │   └── utils
@@ -59,4 +61,4 @@
 │   └── main
 └── tree.txt
 
-26 directories, 34 files
+26 directories, 36 files

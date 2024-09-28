@@ -11,6 +11,7 @@ import (
 	"github.com/lordofthemind/EventureGo/internals/repositories"
 	"github.com/lordofthemind/EventureGo/internals/types"
 	"github.com/lordofthemind/EventureGo/internals/utils"
+	"github.com/lordofthemind/mygopher/gophersmtp"
 	"github.com/lordofthemind/mygopher/gophertoken"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -18,13 +19,13 @@ import (
 type SuperUserService struct {
 	repo         repositories.SuperUserRepositoryInterface
 	tokenManager gophertoken.TokenManager
-	emailService EmailServiceInterface
+	emailService gophersmtp.GopherSmtpInterface
 }
 
 func NewSuperUserService(
 	repo repositories.SuperUserRepositoryInterface,
 	tokenManager gophertoken.TokenManager,
-	emailService EmailServiceInterface,
+	emailService gophersmtp.GopherSmtpInterface,
 ) SuperUserServiceInterface {
 	return &SuperUserService{
 		repo:         repo,
@@ -122,7 +123,7 @@ func (s *SuperUserService) SendPasswordResetEmailWithUsernameOrEmail(ctx context
 	log.Printf("Sending password reset token to %s: %s\n", superUser.Email, resetToken)
 
 	// Send password reset email using EmailService
-	err = s.emailService.SendTextEmail([]string{superUser.Email}, "Password Reset", fmt.Sprintf("Your reset token is: %s", resetToken))
+	err = s.emailService.SendEmail([]string{superUser.Email}, "Password Reset", fmt.Sprintf("Your reset token is: %s", resetToken), false)
 	if err != nil {
 		return newerrors.Wrap(err, "failed to send reset email")
 	}

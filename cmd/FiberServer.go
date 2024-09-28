@@ -17,6 +17,7 @@ import (
 	"github.com/lordofthemind/EventureGo/internals/services"
 	"github.com/lordofthemind/mygopher/gopherlogger"
 	"github.com/lordofthemind/mygopher/gophermongo"
+	"github.com/lordofthemind/mygopher/gophersmtp"
 	"github.com/lordofthemind/mygopher/gophertoken"
 )
 
@@ -77,7 +78,7 @@ func FiberServer() {
 	}
 
 	// Initialize services
-	emailService := services.NewEmailService(
+	emailService := gophersmtp.NewEmailService(
 		configs.SMTPHost,
 		configs.SMTPPort,
 		configs.EmailUsername,
