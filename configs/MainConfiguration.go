@@ -32,6 +32,12 @@ var (
 	// Logging
 	LoggingLevel string
 
+	// SMTP email Configuration
+	SMTPHost      string
+	SMTPPort      string
+	EmailUsername string
+	EmailPassword string
+
 	// Token & Authentication
 	TokenType           string // Type of token used (e.g., "Bearer")
 	TokenSymmetricKey   string // Symmetric key for token signing
@@ -97,6 +103,11 @@ func LoadMainConfiguration(configFile string) error {
 	EnableTLS = viper.GetBool("server.use_tls")
 
 	LoggingLevel = viper.GetString("logging.level")
+
+	SMTPHost = viper.GetString("smtp_email.host")
+	SMTPPort = viper.GetString("smtp_email.port")
+	EmailUsername = viper.GetString("smtp_email.username")
+	EmailPassword = viper.GetString("smtp_email.password")
 
 	TokenType = viper.GetString("token.type")
 	TokenSymmetricKey = viper.GetString("token.symmetric_key")

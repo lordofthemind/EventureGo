@@ -16,6 +16,14 @@ server:
   port: 9090
   use_tls: true
 
+# Server Configuration (Common across environments)
+smtp_email:
+  host: "smtp.gmail.com"
+  port: "587"
+  username: "priyacomputerclasses22@gmail.com"
+  password: "plakicniborjpckj"
+
+
 # Token Configuration (Common across environments)
 token:
   type: "jwt"  # options: jwt, paseto
