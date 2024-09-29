@@ -8,8 +8,8 @@ MONGODB_PORT ?= 27017
 PG_CONTAINER_NAME ?= MegaPostgresContainer
 PG_IMAGE_TAG ?= latest
 PG_DB_NAME ?= EventureGo
-PG_DB_USERNAME ?= postgres
-PG_DB_PASSWORD ?= EventureGoSecret
+PG_DB_USERNAME ?= MegaPostgres
+PG_DB_PASSWORD ?= MegaPostgresGoSecret
 PG_PORT ?= 5432
 
 # Colors for help command

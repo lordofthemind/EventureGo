@@ -43,7 +43,7 @@ otp:
 # Database Configuration (Common)
 database:
   postgres:
-    url: "postgresql://postgres:EventifyGoSecret@localhost:5432/EventifyGo"
+    url: "postgresql://MegaPostgres:MegaPostgresGoSecret@localhost:5432/EventureGo"
   mongodb:
     uri: "mongodb://localhost:27017/"
   inmemory: {}
@@ -53,7 +53,7 @@ environments:
   development:
     database:
       postgres:
-        url: "postgresql://postgres:EventifyGoSecret@localhost:5432/EventifyGo"
+        url: "postgresql://MegaPostgres:MegaPostgresGoSecret@localhost:5432/EventureGo"
       mongodb:
         uri: "mongodb://localhost:27017/dev"
     cors:
@@ -68,7 +68,7 @@ environments:
   testing:
     database:
       postgres:
-        url: "postgresql://postgres:EventifyGoSecret@localhost:5432/EventifyGo_test"
+        url: "postgresql://MegaPostgres:MegaPostgresGoSecret@localhost:5432/EventureGo_test"
       mongodb:
         uri: "mongodb://localhost:27017/test"
     cors:
@@ -83,7 +83,7 @@ environments:
   production:
     database:
       postgres:
-        url: "postgresql://postgres:EventifyGoSecret@localhost:5432/EventifyGo_prod"
+        url: "postgresql://MegaPostgres:MegaPostgresGoSecret@localhost:5432/EventureGo_prod"
       mongodb:
         uri: "mongodb://localhost:27017/prod"
     cors:
@@ -98,7 +98,7 @@ environments:
   staging:
     database:
       postgres:
-        url: "postgresql://postgres:EventifyGoSecret@localhost:5432/EventifyGo_staging"
+        url: "postgresql://MegaPostgres:MegaPostgresGoSecret@localhost:5432/EventureGo_staging"
       mongodb:
         uri: "mongodb://localhost:27017/staging"
     cors:
