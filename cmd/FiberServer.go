@@ -7,6 +7,7 @@ import (
 	"github.com/lordofthemind/EventureGo/configs"
 	"github.com/lordofthemind/EventureGo/internals/handlers"
 	"github.com/lordofthemind/EventureGo/internals/initializers"
+	"github.com/lordofthemind/EventureGo/internals/middlewares"
 	"github.com/lordofthemind/EventureGo/internals/repositories"
 	"github.com/lordofthemind/EventureGo/internals/repositories/inmemory"
 	"github.com/lordofthemind/EventureGo/internals/repositories/mongodb"
@@ -106,6 +107,9 @@ func FiberServer() {
 
 	// Create a new Fiber server using gopherfiber
 	fiberServer := gopherfiber.NewFiberServer(&gopherfiber.ServerSetupImpl{}, serverConfig)
+
+	// Use the RequestID middleware
+	fiberServer.GetRouter().Use(middlewares.RequestIDFiberMiddleware())
 
 	// Set up Fiber routes
 	routes.SetupSuperUserFiberRoutes(fiberServer.GetRouter(), superUserHandler, tokenManager)
