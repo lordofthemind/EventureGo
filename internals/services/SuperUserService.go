@@ -35,7 +35,7 @@ func NewSuperUserService(
 	}
 }
 
-// RegisterSuperUser registers a new superuser and returns the response object
+// RegisterSuperUser registers a new superuser and sends verification email
 func (s *SuperUserService) RegisterSuperUser(ctx context.Context, req *utils.RegisterSuperuserRequest) (*utils.RegisterSuperuserResponse, error) {
 	// Validate email and username availability via validation layer
 	if err := utils.ValidateUniqueness(ctx, req.Email, req.Username, s.repo); err != nil {
@@ -60,10 +60,62 @@ func (s *SuperUserService) RegisterSuperUser(ctx context.Context, req *utils.Reg
 		return nil, newerrors.Wrap(err, "failed to create superuser")
 	}
 
+	// Generate verification link with OTP
+	verificationLink := "http://localhost:9090/superusers/verify?otp=" + otp
+
+	// Prepare the email data
+	emailData := map[string]interface{}{
+		"FullName":         req.FullName,
+		"VerificationLink": verificationLink,
+		"OTP":              otp,
+	}
+
+	// Load and render the email template
+	emailBody, err := htmltemplates.LoadAndRenderTemplate("welcome_verification_email.html", emailData)
+	if err != nil {
+		return nil, newerrors.Wrap(err, "failed to render email template")
+	}
+
+	// Send the verification email
+	err = s.emailService.SendEmail([]string{req.Email}, "Welcome to EventureGo - Verify Your Account", emailBody, true)
+	if err != nil {
+		return nil, newerrors.Wrap(err, "failed to send verification email")
+	}
+
 	log.Printf("Generated OTP: %s", otp)
 
 	// Prepare and return the response object
 	return utils.CreateSuperuserResponse(createdSuperUser), nil
+}
+
+func (s *SuperUserService) VerifySuperUserOTP(ctx context.Context, otp string) (*types.SuperUserType, error) {
+	// Fetch the superuser by OTP
+	superUser, err := s.repo.FindSuperUserByOTP(ctx, otp)
+	if err != nil {
+		return nil, newerrors.Wrap(err, "invalid or expired OTP")
+	}
+
+	// Mark the superuser as verified
+	if err := s.repo.VerifySuperUserOTP(ctx, superUser); err != nil {
+		return nil, newerrors.Wrap(err, "failed to verify OTP")
+	}
+
+	// Send verification confirmation email
+	confirmationEmailBody, err := htmltemplates.LoadAndRenderTemplate("verification_success_email.html", map[string]interface{}{
+		"FullName": superUser.FullName,
+	})
+	if err != nil {
+		return nil, newerrors.Wrap(err, "failed to render confirmation email template")
+	}
+
+	err = s.emailService.SendEmail([]string{superUser.Email}, "Account Verified - Welcome to EventureGo", confirmationEmailBody, true)
+	if err != nil {
+		return nil, newerrors.Wrap(err, "failed to send verification confirmation email")
+	}
+
+	log.Printf("Superuser verified: %s", superUser.Email)
+
+	return superUser, nil
 }
 
 func (s *SuperUserService) LogInSuperuser(ctx context.Context, loginRequest *utils.LogInSuperuserRequest) (*utils.LoginSuperuserResponse, error) {

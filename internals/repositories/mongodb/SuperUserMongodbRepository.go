@@ -86,3 +86,40 @@ func (r *mongoSuperUserRepository) UpdateSuperUser(ctx context.Context, superUse
 	)
 	return err
 }
+
+// FindSuperUserByOTP retrieves the superuser by OTP from MongoDB
+func (r *mongoSuperUserRepository) FindSuperUserByOTP(ctx context.Context, otp string) (*types.SuperUserType, error) {
+	var superUser types.SuperUserType
+	filter := bson.M{"otp": otp}
+	err := r.collection.FindOne(ctx, filter).Decode(&superUser)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if OTP has expired
+	if time.Now().After(superUser.OTPExpiry) {
+		return nil, errors.New("OTP has expired")
+	}
+
+	return &superUser, nil
+}
+
+// VerifySuperUserOTP marks the user as verified in MongoDB
+func (r *mongoSuperUserRepository) VerifySuperUserOTP(ctx context.Context, superUser *types.SuperUserType) error {
+	superUser.IsOTPVerified = true
+	superUser.OTP = nil               // Clear the OTP after verification
+	superUser.OTPExpiry = time.Time{} // Reset OTP expiry
+	superUser.UpdatedAt = time.Now()
+
+	filter := bson.M{"_id": superUser.ID}
+	update := bson.M{
+		"$set": bson.M{
+			"is_otp_verified": true,
+			"otp":             nil,
+			"otp_expiry":      time.Time{},
+			"updated_at":      superUser.UpdatedAt,
+		},
+	}
+	_, err := r.collection.UpdateOne(ctx, filter, update)
+	return err
+}

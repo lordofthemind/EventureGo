@@ -76,3 +76,28 @@ func (r *postgresSuperUserRepository) UpdateSuperUser(ctx context.Context, super
 	superUser.UpdatedAt = time.Now()
 	return r.db.WithContext(ctx).Save(superUser).Error
 }
+
+// FindSuperUserByOTP retrieves the superuser by OTP
+func (r *postgresSuperUserRepository) FindSuperUserByOTP(ctx context.Context, otp string) (*types.SuperUserType, error) {
+	var superUser types.SuperUserType
+	if err := r.db.WithContext(ctx).Where("otp = ?", otp).First(&superUser).Error; err != nil {
+		return nil, err
+	}
+
+	// Check if OTP has expired
+	if time.Now().After(superUser.OTPExpiry) {
+		return nil, errors.New("OTP has expired")
+	}
+
+	return &superUser, nil
+}
+
+// VerifySuperUserOTP marks the user as verified and updates the OTP status
+func (r *postgresSuperUserRepository) VerifySuperUserOTP(ctx context.Context, superUser *types.SuperUserType) error {
+	superUser.IsOTPVerified = true
+	superUser.OTP = nil               // Clear the OTP after verification
+	superUser.OTPExpiry = time.Time{} // Reset OTP expiry
+	superUser.UpdatedAt = time.Now()
+
+	return r.db.WithContext(ctx).Save(superUser).Error
+}

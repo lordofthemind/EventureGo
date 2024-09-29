@@ -97,3 +97,34 @@ func (r *inMemorySuperUserRepository) UpdateSuperUser(ctx context.Context, super
 	existingSuperUser.UpdatedAt = time.Now()
 	return nil
 }
+
+// FindSuperUserByOTP retrieves the superuser by OTP in-memory
+func (r *inMemorySuperUserRepository) FindSuperUserByOTP(ctx context.Context, otp string) (*types.SuperUserType, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	for _, superUser := range r.superUsers {
+		if superUser.OTP != nil && *superUser.OTP == otp {
+			// Check if OTP has expired
+			if time.Now().After(superUser.OTPExpiry) {
+				return nil, errors.New("OTP has expired")
+			}
+			return superUser, nil
+		}
+	}
+	return nil, errors.New("superuser not found")
+}
+
+// VerifySuperUserOTP marks the user as verified in-memory
+func (r *inMemorySuperUserRepository) VerifySuperUserOTP(ctx context.Context, superUser *types.SuperUserType) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	superUser.IsOTPVerified = true
+	superUser.OTP = nil               // Clear the OTP after verification
+	superUser.OTPExpiry = time.Time{} // Reset OTP expiry
+	superUser.UpdatedAt = time.Now()
+
+	r.superUsers[superUser.ID] = superUser
+	return nil
+}

@@ -14,4 +14,6 @@ type SuperUserRepositoryInterface interface {
 	FindSuperUserByResetToken(ctx context.Context, token string) (*types.SuperUserType, error)
 	UpdateResetToken(ctx context.Context, superUserID uuid.UUID, resetToken string) error
 	UpdateSuperUser(ctx context.Context, superUser *types.SuperUserType) error
+	FindSuperUserByOTP(ctx context.Context, otp string) (*types.SuperUserType, error)
+	VerifySuperUserOTP(ctx context.Context, superUser *types.SuperUserType) error
 }
