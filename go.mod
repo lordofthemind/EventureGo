@@ -11,7 +11,7 @@ require (
 	github.com/lordofthemind/mygopher/gophergin v0.0.0-20240929174713-cc0d1182f76f
 	github.com/lordofthemind/mygopher/gopherlogger v0.0.0-20240919183559-148b53310041
 	github.com/lordofthemind/mygopher/gophermongo v0.0.0-20240929174713-cc0d1182f76f
-	github.com/lordofthemind/mygopher/gopherpostgres v0.0.0-20240919183559-148b53310041
+	github.com/lordofthemind/mygopher/gopherpostgres v0.0.0-20240929190058-65e020b3f86b
 	github.com/lordofthemind/mygopher/gophersmtp v0.0.0-20240928170410-8693d6e5e172
 	github.com/lordofthemind/mygopher/gophertoken v0.0.0-20240919183559-148b53310041
 	github.com/spf13/viper v1.19.0
@@ -40,9 +40,9 @@ require (
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
-	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
-	github.com/jackc/pgx/v5 v5.5.5 // indirect
-	github.com/jackc/puddle/v2 v2.2.1 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
+	github.com/jackc/pgx/v5 v5.7.1 // indirect
+	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
