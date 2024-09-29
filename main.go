@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	// cmd.FiberServer()
-	cmd.GinServer()
+	cmd.FiberServer()
+	// cmd.GinServer()
 }

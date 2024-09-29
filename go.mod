@@ -7,8 +7,8 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/google/uuid v1.6.0
-	github.com/lordofthemind/mygopher/gopherfiber v0.0.0-20240929133517-6481fd3774b2
-	github.com/lordofthemind/mygopher/gophergin v0.0.0-20240929133517-6481fd3774b2
+	github.com/lordofthemind/mygopher/gopherfiber v0.0.0-20240929174713-cc0d1182f76f
+	github.com/lordofthemind/mygopher/gophergin v0.0.0-20240929174713-cc0d1182f76f
 	github.com/lordofthemind/mygopher/gopherlogger v0.0.0-20240919183559-148b53310041
 	github.com/lordofthemind/mygopher/gophermongo v0.0.0-20240919183559-148b53310041
 	github.com/lordofthemind/mygopher/gopherpostgres v0.0.0-20240919183559-148b53310041
@@ -36,9 +36,6 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.22.1 // indirect
 	github.com/goccy/go-json v0.10.3 // indirect
-	github.com/gofiber/template v1.8.3 // indirect
-	github.com/gofiber/template/html/v2 v2.1.2 // indirect
-	github.com/gofiber/utils v1.1.0 // indirect
 	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
