@@ -47,6 +47,21 @@ func (h *SuperUserFiberHandler) RegisterSuperUserHandler(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(response)
 }
 
+// VerifySuperUserHandler handles the OTP verification
+func (h *SuperUserFiberHandler) VerifySuperUserHandler(c *fiber.Ctx) error {
+	otp := c.Query("otp")
+	if otp == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "OTP is required"})
+	}
+
+	superUser, err := h.service.VerifySuperUserOTP(c.Context(), otp)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Account successfully verified", "superuser": superUser})
+}
+
 // LogInSuperUserHandler handles the login of a superuser
 func (h *SuperUserFiberHandler) LogInSuperUserHandler(c *fiber.Ctx) error {
 	var req utils.LogInSuperuserRequest

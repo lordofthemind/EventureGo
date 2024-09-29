@@ -15,6 +15,7 @@ func SetupSuperUserFiberRoutes(
 ) {
 	// Public routes for registration and login
 	app.Post("/superusers/register", handler.RegisterSuperUserHandler)
+	app.Get("/superusers/verify", handler.VerifySuperUserHandler)
 	app.Post("/superusers/login", handler.LogInSuperUserHandler)
 
 	// Authenticated routes group, protected by the AuthTokenFiberMiddleware

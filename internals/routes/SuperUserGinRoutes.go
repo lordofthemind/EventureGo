@@ -14,8 +14,6 @@ func SetupSuperUserGinRoutes(
 ) {
 	// Public routes for registration and password resets
 	router.POST("/superusers/register", superUserHandler.RegisterSuperUserHandler)
-
-	// Route for verifying OTP
 	router.GET("/superusers/verify", superUserHandler.VerifySuperUserHandler)
 	router.POST("/superusers/login", superUserHandler.LogInSuperUserHandler)
 
@@ -26,7 +24,7 @@ func SetupSuperUserGinRoutes(
 		authRoutes.GET("/logout", superUserHandler.LogOutSuperUserHandler)
 		// Add more authenticated routes here as needed
 	}
-
+	// Password reset routes
 	router.POST("/superuser/password-reset/request", superUserHandler.PasswordResetRequestHandler)
 	router.POST("/superuser/password-reset/:token", superUserHandler.PasswordResetHandler)
 }
