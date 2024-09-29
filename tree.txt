@@ -6,8 +6,7 @@
 ├── bin
 ├── cmd
 │   ├── FiberServer.go
-│   ├── GinServer.go
-│   └── SuperUserSeeder.go
+│   └── GinServer.go
 ├── config.yaml
 ├── configs
 │   └── MainConfiguration.go
@@ -61,9 +60,11 @@
 ├── pkgs
 ├── scripts
 ├── ssl
+│   └── ssl.sh
+├── static
 ├── tmp
 │   ├── build-errors.log
 │   └── main
 └── tree.txt
 
-28 directories, 39 files
+29 directories, 39 files

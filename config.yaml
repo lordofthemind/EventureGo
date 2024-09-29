@@ -66,8 +66,8 @@ environments:
       allowed_headers: [Origin, Content-Type, Authorization]
       exposed_headers: [Content-Length, Content-Range]
       allow_credentials: true
-    cert_file: "ssl/dev_server.crt"
-    key_file: "ssl/dev_server.pem"
+    cert_file: "ssl/server.crt"
+    key_file: "ssl/server.pem"
     base_url: "http://localhost:9090"
 
   testing:
