@@ -1,8 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555555;
+        }
+
+        .button {
+            display: block;
+            width: 250px;
+            margin: 30px auto;
+            padding: 15px 0;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 14px;
+            color: #888888;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+    </style>
+    <title>Account Verified</title>
+</head>
+
 <body>
-  <h1>Hi {{ .FullName }},</h1>
-  <p>Congratulations! Your account has been successfully verified.</p>
-  <p>Welcome to EventureGo!</p>
+    <div class="container">
+        <h1>Congratulations, {{.FullName}}!</h1>
+        <p>
+            Hi {{.FullName}}, your account has been successfully verified! You’re now officially a part of the EventureGo community. We’re excited for you to explore all the features and services we have to offer.
+        </p>
+
+        <p>
+            You can now log in and start organizing and managing your events like never before. We’re here to support you every step of the way.
+        </p>
+
+        <a href="https://www.eventurego.com/login" class="button">Login to Your Account</a>
+
+        <p>
+            If you have any questions, feel free to reach out to our support team at <a href="mailto:support@eventurego.com">support@eventurego.com</a>.
+        </p>
+
+        <div class="footer">
+            <p>&copy; 2024 EventureGo | All rights reserved.</p>
+            <p>Follow us on <a href="https://twitter.com/eventurego">Twitter</a> | <a href="https://facebook.com/eventurego">Facebook</a></p>
+        </div>
+    </div>
 </body>
+
 </html>

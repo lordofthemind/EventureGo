@@ -7,54 +7,70 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f9f9f9;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
+            color: #333333;
         }
 
         .container {
             max-width: 600px;
-            margin: 20px auto;
+            margin: 40px auto;
             background-color: #ffffff;
-            padding: 20px;
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            color: #333333;
+            color: #4CAF50;
             text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
         }
 
         p {
             font-size: 16px;
+            line-height: 1.6;
             color: #555555;
-            text-align: justify;
         }
 
         .button {
             display: block;
-            width: 200px;
-            margin: 20px auto;
-            padding: 10px 0;
-            text-align: center;
+            width: 250px;
+            margin: 30px auto;
+            padding: 15px 0;
             background-color: #4CAF50;
             color: white;
+            text-align: center;
             text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
             border-radius: 5px;
-            font-size: 16px;
+            transition: background-color 0.3s ease;
         }
 
         .button:hover {
             background-color: #45a049;
         }
 
-        footer {
+        .otp-section {
             text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
+            font-size: 18px;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 14px;
             color: #888888;
+        }
+
+        .footer p {
+            margin: 5px 0;
         }
     </style>
     <title>Email Verification</title>
@@ -62,20 +78,29 @@
 
 <body>
     <div class="container">
-        <h1>Welcome, {{.FullName}}!</h1>
+        <h1>Welcome to EventureGo, {{.FullName}}!</h1>
         <p>
-            Hello {{.FullName}}, thank you for registering with us! To complete your registration, please verify your email by clicking the link below:
+            Hi {{.FullName}}, we’re thrilled to have you on board! To complete your registration and start using our platform, we need to verify your email address. Please click the button below to verify your account and unlock all features.
         </p>
 
-        <a href="{{.VerificationLink}}" class="button">Verify Your Account</a>
+        <a href="{{.VerificationLink}}" class="button">Verify My Email</a>
+
+        <p>If the button above doesn’t work, you can copy and paste the following link into your browser:</p>
+        <p>{{.VerificationLink}}</p>
+
+        <div class="otp-section">
+            <p>Alternatively, use this OTP for verification:</p>
+            <p><strong>{{.OTP}}</strong></p>
+        </div>
 
         <p>
-            Alternatively, you can use the following OTP: <strong>{{.OTP}}</strong>
+            If you did not register for this account, please ignore this email.
         </p>
 
-        <footer>
-            &copy; 2024 EventureGo | All rights reserved.
-        </footer>
+        <div class="footer">
+            <p>&copy; 2024 EventureGo | All rights reserved.</p>
+            <p>Need help? <a href="mailto:support@eventurego.com">Contact Support</a></p>
+        </div>
     </div>
 </body>
 
