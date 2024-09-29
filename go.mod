@@ -3,9 +3,11 @@ module github.com/lordofthemind/EventureGo
 go 1.22.3
 
 require (
+	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/google/uuid v1.6.0
+	github.com/lordofthemind/mygopher/gophergin v0.0.0-20240929123824-9dcb17aa28c0
 	github.com/lordofthemind/mygopher/gopherlogger v0.0.0-20240919183559-148b53310041
 	github.com/lordofthemind/mygopher/gophermongo v0.0.0-20240919183559-148b53310041
 	github.com/lordofthemind/mygopher/gopherpostgres v0.0.0-20240919183559-148b53310041

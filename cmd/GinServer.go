@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
+	"time"
 
-	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 	"github.com/lordofthemind/EventureGo/configs"
 	"github.com/lordofthemind/EventureGo/internals/handlers"
 	"github.com/lordofthemind/EventureGo/internals/initializers"
@@ -15,6 +15,7 @@ import (
 	"github.com/lordofthemind/EventureGo/internals/repositories/postgresdb"
 	"github.com/lordofthemind/EventureGo/internals/routes"
 	"github.com/lordofthemind/EventureGo/internals/services"
+	"github.com/lordofthemind/mygopher/gophergin"
 	"github.com/lordofthemind/mygopher/gopherlogger"
 	"github.com/lordofthemind/mygopher/gophermongo"
 	"github.com/lordofthemind/mygopher/gophersmtp"
@@ -89,15 +90,41 @@ func GinServer() {
 	// Initialize handler
 	superUserHandler := handlers.NewSuperUserGinHandler(superUserService)
 
-	router := gin.Default()
+	// Use gophergin to set up the server
+	serverConfig := gophergin.ServerConfig{
+		Port:         configs.ServerPort,
+		StaticPath:   configs.StaticPath,   // Example static path
+		TemplatePath: configs.TemplatePath, // Example template path
+		UseTLS:       configs.EnableTLS,    // Use TLS setting from config
+		TLSCertFile:  configs.TLSCertFile,  // TLS certificate file path
+		TLSKeyFile:   configs.TLSKeyFile,   // TLS key file path
+		UseCORS:      configs.EnableCors,   // Enable CORS if needed
+		CORSConfig: cors.Config{
+			AllowOrigins:     configs.CORSAllowedOrigins,
+			AllowMethods:     configs.CORSAllowedMethods,
+			AllowHeaders:     configs.CORSAllowedHeaders,
+			ExposeHeaders:    configs.CORSExposedHeaders,
+			AllowCredentials: configs.CORSAllowCredentials,
+			MaxAge:           12 * time.Hour,
+		},
+	}
 
+	server := gophergin.NewGinServer(&gophergin.ServerSetupImpl{}, serverConfig)
+
+	// Get the router from the server
+	router := server.GetRouter()
+
+	// Middleware
 	router.Use(middlewares.RequestIDGinMiddleware())
 
+	// Set up routes
 	routes.SetupSuperUserGinRoutes(router, superUserHandler, tokenManager)
 
-	// Dynamically fetch server address and port from the configuration
-	serverAddress := fmt.Sprintf(":%d", configs.ServerPort)
-	if err := router.Run(serverAddress); err != nil {
-		log.Fatalf("Failed to start Gin server on %s: %v", serverAddress, err)
+	// Start server (with or without TLS)
+	if err := server.Start(); err != nil {
+		log.Fatalf("Failed to start Gin server on port %d: %v", serverConfig.Port, err)
 	}
+
+	// Graceful shutdown handling
+	server.GracefulShutdown()
 }

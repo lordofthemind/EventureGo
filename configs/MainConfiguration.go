@@ -36,6 +36,9 @@ var (
 	// OTP
 	OTPExpiryDuration time.Duration
 
+	StaticPath   string
+	TemplatePath string
+
 	// SMTP email Configuration
 	SMTPHost      string
 	SMTPPort      string
@@ -50,6 +53,7 @@ var (
 	TokenExpiryDuration time.Duration // Duration before the token expires
 
 	// CORS Configuration
+	EnableCors           bool
 	CORSAllowedOrigins   []string // List of allowed origins for CORS
 	CORSAllowedMethods   []string // List of allowed methods for CORS (e.g., GET, POST)
 	CORSAllowedHeaders   []string // List of allowed headers in CORS requests
@@ -110,6 +114,9 @@ func LoadMainConfiguration(configFile string) error {
 	LoggingLevel = viper.GetString("logging.level")
 
 	OTPExpiryDuration = viper.GetDuration("otp.access_duration")
+
+	StaticPath = viper.GetString("file_path.static")
+	TemplatePath = viper.GetString("file_path.template")
 
 	SMTPHost = viper.GetString("smtp_email.host")
 	SMTPPort = viper.GetString("smtp_email.port")

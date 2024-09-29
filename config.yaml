@@ -40,6 +40,10 @@ logging:
 otp:
   access_duration: "60m"
 
+file_path:
+  static: "./static"
+  template: "./htmltemplates/templates/*"
+
 # Database Configuration (Common)
 database:
   postgres:
