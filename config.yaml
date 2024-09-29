@@ -1,7 +1,7 @@
 # Main Application Configuration
 application:
   environment: "development"  # options: development, production, testing, staging
-  database_type: "postgres"   # options: postgres, mongodb, inmemory
+  database_type: "mongodb"   # options: postgres, mongodb, inmemory
   server_type: "gin"
   allowed_roles:
     - "SuperUser"
@@ -59,7 +59,7 @@ environments:
       postgres:
         url: "postgresql://MegaPostgres:MegaPostgresGoSecret@localhost:5432/EventureGo"
       mongodb:
-        uri: "mongodb://localhost:27017/dev"
+        uri: "mongodb://localhost:27017/"
     cors:
       allowed_origins: "http://localhost:3000"
       allowed_methods: [GET, POST, PUT, DELETE]
