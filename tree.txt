@@ -60,6 +60,13 @@
 ├── pkgs
 ├── scripts
 ├── ssl
+│   ├── ca.crt
+│   ├── ca.key
+│   ├── server.crt
+│   ├── server.csr
+│   ├── server.key
+│   ├── server.pem
+│   ├── server_cert_ext.cnf
 │   └── ssl.sh
 ├── static
 ├── tmp
@@ -67,4 +74,4 @@
 │   └── main
 └── tree.txt
 
-29 directories, 39 files
+29 directories, 46 files
