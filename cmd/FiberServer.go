@@ -1,20 +1,19 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/lordofthemind/EventureGo/configs"
 	"github.com/lordofthemind/EventureGo/internals/handlers"
 	"github.com/lordofthemind/EventureGo/internals/initializers"
-	"github.com/lordofthemind/EventureGo/internals/middlewares"
 	"github.com/lordofthemind/EventureGo/internals/repositories"
 	"github.com/lordofthemind/EventureGo/internals/repositories/inmemory"
 	"github.com/lordofthemind/EventureGo/internals/repositories/mongodb"
 	"github.com/lordofthemind/EventureGo/internals/repositories/postgresdb"
 	"github.com/lordofthemind/EventureGo/internals/routes"
 	"github.com/lordofthemind/EventureGo/internals/services"
+	"github.com/lordofthemind/mygopher/gopherfiber"
 	"github.com/lordofthemind/mygopher/gopherlogger"
 	"github.com/lordofthemind/mygopher/gophermongo"
 	"github.com/lordofthemind/mygopher/gophersmtp"
@@ -88,17 +87,36 @@ func FiberServer() {
 
 	superUserHandler := handlers.NewSuperUserFiberHandler(superUserService)
 
+	// Create ServerConfig for gopherfiber
+	serverConfig := gopherfiber.ServerConfig{
+		Port: configs.ServerPort,
+		// StaticPath:   configs.StaticPath, // Adjust paths as necessary
+		// TemplatePath: configs.TemplatePath,
+		UseTLS:      configs.EnableTLS,   // Set true if you want to use TLS
+		TLSCertFile: configs.TLSCertFile, // TLS certificate file path
+		TLSKeyFile:  configs.TLSKeyFile,  // TLS key file path
+		UseCORS:     configs.EnableCors,
+		CORSConfig: cors.Config{
+			AllowOrigins: configs.CORSAllowedOrigins[0], // Modify as needed for your application
+			// AllowMethods:     configs.CORSAllowedMethods[0],
+			// AllowHeaders:     configs.CORSAllowedHeaders[0],
+			// ExposeHeaders:    configs.CORSExposedHeaders[0],
+			// AllowCredentials: configs.CORSAllowCredentials,
+			// MaxAge:           12 * time.Hour,
+		},
+	}
+
+	// Create a new Fiber server using gopherfiber
+	fiberServer := gopherfiber.NewFiberServer(&gopherfiber.ServerSetupImpl{}, serverConfig)
+
 	// Set up Fiber routes
-	app := fiber.New()
+	routes.SetupSuperUserFiberRoutes(fiberServer.GetRouter(), superUserHandler, tokenManager)
 
-	// Apply middleware globally or for specific routes
-	app.Use(middlewares.RequestIDFiberMiddleware())
-
-	routes.SetupSuperUserFiberRoutes(app, superUserHandler, tokenManager)
-
-	// Dynamically fetch server address and port from the configuration
-	serverAddress := fmt.Sprintf(":%d", configs.ServerPort)
-	if err := app.Listen(serverAddress); err != nil {
+	// Start the Fiber server
+	if err := fiberServer.Start(); err != nil {
 		log.Fatalf("Failed to start Fiber server: %v", err)
 	}
+
+	// Graceful shutdown on interrupt signal
+	fiberServer.GracefulShutdown()
 }

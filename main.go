@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
+	cmd.FiberServer()
 	// cmd.SuperUserSeeder()
-	// cmd.FiberServer()
-	cmd.GinServer()
+	// cmd.GinServer()
 }

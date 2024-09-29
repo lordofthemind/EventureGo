@@ -109,10 +109,10 @@ func GinServer() {
 		},
 	}
 
-	server := gophergin.NewGinServer(&gophergin.ServerSetupImpl{}, serverConfig)
+	ginServer := gophergin.NewGinServer(&gophergin.ServerSetupImpl{}, serverConfig)
 
 	// Get the router from the server
-	router := server.GetRouter()
+	router := ginServer.GetRouter()
 
 	// Middleware
 	router.Use(middlewares.RequestIDGinMiddleware())
@@ -121,10 +121,10 @@ func GinServer() {
 	routes.SetupSuperUserGinRoutes(router, superUserHandler, tokenManager)
 
 	// Start server (with or without TLS)
-	if err := server.Start(); err != nil {
+	if err := ginServer.Start(); err != nil {
 		log.Fatalf("Failed to start Gin server on port %d: %v", serverConfig.Port, err)
 	}
 
 	// Graceful shutdown handling
-	server.GracefulShutdown()
+	ginServer.GracefulShutdown()
 }
