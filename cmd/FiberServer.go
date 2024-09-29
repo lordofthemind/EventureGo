@@ -89,9 +89,7 @@ func FiberServer() {
 
 	// Create ServerConfig for gopherfiber
 	serverConfig := gopherfiber.ServerConfig{
-		Port: configs.ServerPort,
-		// StaticPath:   configs.StaticPath, // Adjust paths as necessary
-		// TemplatePath: configs.TemplatePath,
+		Port:        configs.ServerPort,
 		UseTLS:      configs.EnableTLS,   // Set true if you want to use TLS
 		TLSCertFile: configs.TLSCertFile, // TLS certificate file path
 		TLSKeyFile:  configs.TLSKeyFile,  // TLS key file path

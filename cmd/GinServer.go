@@ -92,13 +92,11 @@ func GinServer() {
 
 	// Use gophergin to set up the server
 	serverConfig := gophergin.ServerConfig{
-		Port:         configs.ServerPort,
-		StaticPath:   configs.StaticPath,   // Example static path
-		TemplatePath: configs.TemplatePath, // Example template path
-		UseTLS:       configs.EnableTLS,    // Use TLS setting from config
-		TLSCertFile:  configs.TLSCertFile,  // TLS certificate file path
-		TLSKeyFile:   configs.TLSKeyFile,   // TLS key file path
-		UseCORS:      configs.EnableCors,   // Enable CORS if needed
+		Port:        configs.ServerPort,
+		UseTLS:      configs.EnableTLS,
+		TLSCertFile: configs.TLSCertFile,
+		TLSKeyFile:  configs.TLSKeyFile,
+		UseCORS:     configs.EnableCors,
 		CORSConfig: cors.Config{
 			AllowOrigins:     configs.CORSAllowedOrigins,
 			AllowMethods:     configs.CORSAllowedMethods,
