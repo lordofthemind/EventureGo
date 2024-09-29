@@ -19,7 +19,10 @@
 ├── htmltemplates
 │   ├── LoadAndRenderTemplate.go
 │   └── templates
-│       └── welcome_email.html
+│       ├── password_reset_email.html
+│       ├── verification_success_email.html
+│       ├── welcome_email.html
+│       └── welcome_verification_email.html
 ├── internals
 │   ├── handlers
 │   │   ├── SuperUserFiberHandler.go
@@ -63,4 +66,4 @@
 │   └── main
 └── tree.txt
 
-28 directories, 36 files
+28 directories, 39 files

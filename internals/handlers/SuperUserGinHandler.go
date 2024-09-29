@@ -49,6 +49,24 @@ func (h *SuperUserGinHandler) RegisterSuperUserHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, response)
 }
 
+// VerifySuperUser is the handler for OTP verification
+func (h *SuperUserGinHandler) VerifySuperUserHandler(c *gin.Context) {
+	otp := c.Query("otp")
+	if otp == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "OTP is required"})
+		return
+	}
+
+	// Call the service to verify the OTP
+	superUser, err := h.service.VerifySuperUserOTP(c.Request.Context(), otp)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Account successfully verified", "superuser": superUser})
+}
+
 // LogInSuperUserHandler handles the login of a superuser
 func (h *SuperUserGinHandler) LogInSuperUserHandler(c *gin.Context) {
 	var req utils.LogInSuperuserRequest
@@ -184,22 +202,4 @@ func (h *SuperUserGinHandler) PasswordResetHandler(c *gin.Context) {
 	// Use standardized response for successful password reset
 	response := responses.NewGinResponse(c, http.StatusOK, "Password reset successful", nil, nil)
 	c.JSON(http.StatusOK, response)
-}
-
-// VerifySuperUser is the handler for OTP verification
-func (h *SuperUserGinHandler) VerifySuperUserHandler(c *gin.Context) {
-	otp := c.Query("otp")
-	if otp == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "OTP is required"})
-		return
-	}
-
-	// Call the service to verify the OTP
-	superUser, err := h.service.VerifySuperUserOTP(c.Request.Context(), otp)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Account successfully verified", "superuser": superUser})
 }
