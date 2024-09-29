@@ -64,6 +64,7 @@ environments:
       allow_credentials: true
     cert_file: "ssl/dev_server.crt"
     key_file: "ssl/dev_server.pem"
+    base_url: "http://localhost:9090"
 
   testing:
     database:
@@ -79,6 +80,7 @@ environments:
       allow_credentials: true
     cert_file: "ssl/test_server.crt"
     key_file: "ssl/test_server.pem"
+    base_url: "http://localhost:9090"
 
   production:
     database:
@@ -94,6 +96,7 @@ environments:
       allow_credentials: true
     cert_file: "ssl/prod_server.crt"
     key_file: "ssl/prod_server.pem"
+    base_url: "http://localhost:9090"
 
   staging:
     database:
@@ -109,6 +112,7 @@ environments:
       allow_credentials: true
     cert_file: "ssl/staging_server.crt"
     key_file: "ssl/staging_server.pem"
+    base_url: "http://localhost:9090"
 
 # Dynamic Selection (Evaluated at runtime)
 active_configuration:

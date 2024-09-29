@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -60,8 +61,8 @@ func (s *SuperUserService) RegisterSuperUser(ctx context.Context, req *utils.Reg
 		return nil, newerrors.Wrap(err, "failed to create superuser")
 	}
 
-	// Generate verification link with OTP
-	verificationLink := "http://localhost:9090/superusers/verify?otp=" + otp
+	// Generate verification link with OTP using the BaseURL from configuration
+	verificationLink := fmt.Sprintf("%s/superusers/verify?otp=%s", configs.BaseURL, otp)
 
 	// Prepare the email data
 	emailData := map[string]interface{}{
@@ -177,21 +178,31 @@ func (s *SuperUserService) SendPasswordResetEmailWithUsernameOrEmail(ctx context
 
 	// Generate and send a reset token
 	resetToken := utils.GenerateResetToken()
-	log.Printf("Sending password reset token to %s: %s\n", superUser.Email, resetToken)
+	resetLink := fmt.Sprintf("%s/superuser/password-reset/%s", configs.BaseURL, resetToken)
 
-	htmlBody, err := htmltemplates.LoadAndRenderTemplate("welcome_email.html", nil)
+	// Log the reset link for debugging
+	log.Printf("Sending password reset token to %s: %s\n", superUser.Email, resetLink)
 
+	// Prepare data for rendering email template
+	templateData := map[string]interface{}{
+		"FullName":            superUser.FullName,
+		"ResetLink":           resetLink,
+		"TokenExpiryDuration": configs.TokenExpiryDuration, // e.g., "15 minutes"
+	}
+
+	// Render the email template with the token data
+	htmlBody, err := htmltemplates.LoadAndRenderTemplate("password_reset_email.html", templateData)
 	if err != nil {
 		return newerrors.Wrap(err, "failed to render email template")
 	}
 
-	// Send password reset email using EmailService
-	err = s.emailService.SendEmail([]string{superUser.Email}, "Password Reset", htmlBody, true)
+	// Send the password reset email using EmailService
+	err = s.emailService.SendEmail([]string{superUser.Email}, "Password Reset Request", htmlBody, true)
 	if err != nil {
 		return newerrors.Wrap(err, "failed to send reset email")
 	}
 
-	// Store the reset token in the repository
+	// Store the reset token in the repository (assuming token expiry is also stored)
 	return s.repo.UpdateResetToken(ctx, superUser.ID, resetToken)
 }
 

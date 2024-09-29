@@ -16,6 +16,7 @@ var (
 	ServerPort   int      // The port the server listens on
 	Environment  string   // The environment (e.g., "development", "production")
 	AllowedRoles []string // Predefined list of allowed roles
+	BaseURL      string
 
 	// Database Configuration
 	PostgresURL  string        // URL for connecting to the PostgreSQL database
@@ -85,6 +86,7 @@ func LoadMainConfiguration(configFile string) error {
 		CORSAllowCredentials = viper.GetBool(fmt.Sprintf("environments.%s.cors.allow_credentials", Environment))
 		TLSCertFile = viper.GetString(fmt.Sprintf("environments.%s.cert_file", Environment))
 		TLSKeyFile = viper.GetString(fmt.Sprintf("environments.%s.key_file", Environment))
+		BaseURL = viper.GetString(fmt.Sprintf("environments.%s.base_url", Environment))
 	default:
 		return fmt.Errorf("unknown environment: %s", Environment)
 	}
