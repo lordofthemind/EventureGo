@@ -90,6 +90,8 @@ github.com/lordofthemind/mygopher/gopherlogger v0.0.0-20240919183559-148b5331004
 github.com/lordofthemind/mygopher/gopherlogger v0.0.0-20240919183559-148b53310041/go.mod h1:1Vfb+ZfnCBRN24mkO7pWMHBSdIWEZfNh/U0SoFiTDfo=
 github.com/lordofthemind/mygopher/gophermongo v0.0.0-20240919183559-148b53310041 h1:Lt7qJy/gvvqUxbmbx5zmCK4r4S2ZheuTBmhA/B/N3ks=
 github.com/lordofthemind/mygopher/gophermongo v0.0.0-20240919183559-148b53310041/go.mod h1:AXw6ERPaxqzMTQlLAN740yK3tCVsdS51hxPHVYy0qUA=
+github.com/lordofthemind/mygopher/gophermongo v0.0.0-20240929174713-cc0d1182f76f h1:4SpgSBU/Ti1VdDGJV9l0C1E9QnYM8djOG3hqQu8tduw=
+github.com/lordofthemind/mygopher/gophermongo v0.0.0-20240929174713-cc0d1182f76f/go.mod h1:AXw6ERPaxqzMTQlLAN740yK3tCVsdS51hxPHVYy0qUA=
 github.com/lordofthemind/mygopher/gopherpostgres v0.0.0-20240919183559-148b53310041 h1:tBuPaFK/zxF/fQRdMCCgm+ZjEoh/pY0q0edP6mhPS3s=
 github.com/lordofthemind/mygopher/gopherpostgres v0.0.0-20240919183559-148b53310041/go.mod h1:P8wFJwoZmrhfozRPDRFOk2C0Rt31CaJRUfeV/CVlVRo=
 github.com/lordofthemind/mygopher/gophersmtp v0.0.0-20240928170410-8693d6e5e172 h1:qe14JjzTJnyIHoaVPmuxjkCIyaPWZ8eXzWh9fdKIXnU=

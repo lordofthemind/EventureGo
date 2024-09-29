@@ -10,7 +10,7 @@ require (
 	github.com/lordofthemind/mygopher/gopherfiber v0.0.0-20240929174713-cc0d1182f76f
 	github.com/lordofthemind/mygopher/gophergin v0.0.0-20240929174713-cc0d1182f76f
 	github.com/lordofthemind/mygopher/gopherlogger v0.0.0-20240919183559-148b53310041
-	github.com/lordofthemind/mygopher/gophermongo v0.0.0-20240919183559-148b53310041
+	github.com/lordofthemind/mygopher/gophermongo v0.0.0-20240929174713-cc0d1182f76f
 	github.com/lordofthemind/mygopher/gopherpostgres v0.0.0-20240919183559-148b53310041
 	github.com/lordofthemind/mygopher/gophersmtp v0.0.0-20240928170410-8693d6e5e172
 	github.com/lordofthemind/mygopher/gophertoken v0.0.0-20240919183559-148b53310041
