@@ -62,14 +62,15 @@ func (r *mongoSuperUserRepository) FindSuperUserByResetToken(ctx context.Context
 	return &superUser, err
 }
 
-func (r *mongoSuperUserRepository) UpdateResetToken(ctx context.Context, superUserID uuid.UUID, resetToken string) error {
+func (r *mongoSuperUserRepository) UpdateResetToken(ctx context.Context, superUserID uuid.UUID, resetToken string, resetTokenExpiry time.Time) error {
 	_, err := r.collection.UpdateOne(
 		ctx,
 		bson.M{"id": superUserID},
 		bson.M{
 			"$set": bson.M{
-				"reset_token": resetToken,
-				"updated_at":  time.Now(),
+				"reset_token":        resetToken,
+				"reset_token_expiry": resetTokenExpiry,
+				"updated_at":         time.Now(),
 			},
 		},
 	)

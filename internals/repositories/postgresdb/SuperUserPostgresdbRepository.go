@@ -64,11 +64,12 @@ func (r *postgresSuperUserRepository) FindSuperUserByResetToken(ctx context.Cont
 	return &superUser, err
 }
 
-func (r *postgresSuperUserRepository) UpdateResetToken(ctx context.Context, superUserID uuid.UUID, resetToken string) error {
+func (r *postgresSuperUserRepository) UpdateResetToken(ctx context.Context, superUserID uuid.UUID, resetToken string, resetTokenExpiry time.Time) error {
 	return r.db.WithContext(ctx).Model(&types.SuperUserType{}).Where("id = ?", superUserID).
 		Updates(map[string]interface{}{
-			"reset_token": resetToken,
-			"updated_at":  time.Now(),
+			"reset_token":        resetToken,
+			"reset_token_expiry": resetTokenExpiry,
+			"updated_at":         time.Now(),
 		}).Error
 }
 

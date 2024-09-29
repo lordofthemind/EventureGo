@@ -70,7 +70,7 @@ func (r *inMemorySuperUserRepository) FindSuperUserByResetToken(ctx context.Cont
 	return nil, errors.New("superuser not found")
 }
 
-func (r *inMemorySuperUserRepository) UpdateResetToken(ctx context.Context, superUserID uuid.UUID, resetToken string) error {
+func (r *inMemorySuperUserRepository) UpdateResetToken(ctx context.Context, superUserID uuid.UUID, resetToken string, resetTokenExpiry time.Time) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -80,6 +80,7 @@ func (r *inMemorySuperUserRepository) UpdateResetToken(ctx context.Context, supe
 	}
 
 	superUser.ResetToken = &resetToken
+	superUser.ResetTokenExpiry = resetTokenExpiry
 	superUser.UpdatedAt = time.Now()
 	return nil
 }

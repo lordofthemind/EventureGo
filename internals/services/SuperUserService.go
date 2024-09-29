@@ -180,6 +180,9 @@ func (s *SuperUserService) SendPasswordResetEmailWithUsernameOrEmail(ctx context
 	resetToken := utils.GenerateResetToken()
 	resetLink := fmt.Sprintf("%s/superuser/password-reset/%s", configs.BaseURL, resetToken)
 
+	// Set the reset token expiry using configs.TokenExpiryDuration
+	resetTokenExpiry := time.Now().Add(configs.TokenExpiryDuration)
+
 	// Log the reset link for debugging
 	log.Printf("Sending password reset token to %s: %s\n", superUser.Email, resetLink)
 
@@ -202,8 +205,8 @@ func (s *SuperUserService) SendPasswordResetEmailWithUsernameOrEmail(ctx context
 		return newerrors.Wrap(err, "failed to send reset email")
 	}
 
-	// Store the reset token in the repository (assuming token expiry is also stored)
-	return s.repo.UpdateResetToken(ctx, superUser.ID, resetToken)
+	// Store the reset token and expiry in the repository
+	return s.repo.UpdateResetToken(ctx, superUser.ID, resetToken, resetTokenExpiry)
 }
 
 // ResetPassword resets the password of a superuser using a token.
@@ -211,6 +214,11 @@ func (s *SuperUserService) ResetPassword(ctx context.Context, token, newPassword
 	superUser, err := s.repo.FindSuperUserByResetToken(ctx, token)
 	if err != nil {
 		return newerrors.NewValidationError("invalid or expired reset token")
+	}
+
+	// Check if the reset token has expired
+	if time.Now().After(superUser.ResetTokenExpiry) {
+		return newerrors.NewValidationError("reset token has expired")
 	}
 
 	// Hash the new password
@@ -223,6 +231,7 @@ func (s *SuperUserService) ResetPassword(ctx context.Context, token, newPassword
 	superUser.HashedPassword = string(hashedPassword)
 	superUser.UpdatedAt = time.Now()
 	superUser.ResetToken = nil
+	superUser.ResetTokenExpiry = time.Time{} // Clear the expiry
 
 	// Update the superuser record
 	return s.repo.UpdateSuperUser(ctx, superUser)
