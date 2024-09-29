@@ -36,6 +36,10 @@ token:
 logging:
   level: "info"  # options: debug, info, warn, error
 
+# otp
+otp:
+  access_duration: "60m"
+
 # Database Configuration (Common)
 database:
   postgres:

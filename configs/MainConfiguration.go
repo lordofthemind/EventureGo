@@ -32,6 +32,9 @@ var (
 	// Logging
 	LoggingLevel string
 
+	// OTP
+	OTPExpiryDuration time.Duration
+
 	// SMTP email Configuration
 	SMTPHost      string
 	SMTPPort      string
@@ -103,6 +106,8 @@ func LoadMainConfiguration(configFile string) error {
 	EnableTLS = viper.GetBool("server.use_tls")
 
 	LoggingLevel = viper.GetString("logging.level")
+
+	OTPExpiryDuration = viper.GetDuration("otp.access_duration")
 
 	SMTPHost = viper.GetString("smtp_email.host")
 	SMTPPort = viper.GetString("smtp_email.port")

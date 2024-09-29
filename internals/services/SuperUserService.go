@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/lordofthemind/EventureGo/configs"
 	"github.com/lordofthemind/EventureGo/htmltemplates"
 	"github.com/lordofthemind/EventureGo/internals/newerrors"
@@ -48,14 +49,18 @@ func (s *SuperUserService) RegisterSuperUser(ctx context.Context, req *utils.Reg
 	}
 
 	role := "Guest"
+	otp := uuid.New().String() // Generate a UUID as the OTP
+
 	// Create a new SuperUser entity
-	superUserEntity := types.NewSuperUser(req.Email, req.FullName, req.Username, string(hashedPassword), role)
+	superUserEntity := types.NewSuperUser(req.Email, req.FullName, req.Username, string(hashedPassword), role, otp)
 
 	// Store the SuperUser in the repository
 	createdSuperUser, err := s.repo.CreateSuperUser(ctx, superUserEntity)
 	if err != nil {
 		return nil, newerrors.Wrap(err, "failed to create superuser")
 	}
+
+	log.Printf("Generated OTP: %s", otp)
 
 	// Prepare and return the response object
 	return utils.CreateSuperuserResponse(createdSuperUser), nil
@@ -160,35 +165,35 @@ func (s *SuperUserService) ResetPassword(ctx context.Context, token, newPassword
 	return s.repo.UpdateSuperUser(ctx, superUser)
 }
 
-// SeedSuperUser seeds a superuser based on the given request data
-func (s *SuperUserService) SeedSuperUser(ctx context.Context, req *utils.RegisterSuperuserRequest) error {
-	// Check if the superuser already exists by email
-	existingSuperUserByEmail, err := s.repo.FindSuperUserByEmail(ctx, req.Email)
-	if err == nil && existingSuperUserByEmail != nil {
-		return newerrors.NewValidationError("SuperUser with the provided email already exists")
-	}
+// // SeedSuperUser seeds a superuser based on the given request data
+// func (s *SuperUserService) SeedSuperUser(ctx context.Context, req *utils.RegisterSuperuserRequest) error {
+// 	// Check if the superuser already exists by email
+// 	existingSuperUserByEmail, err := s.repo.FindSuperUserByEmail(ctx, req.Email)
+// 	if err == nil && existingSuperUserByEmail != nil {
+// 		return newerrors.NewValidationError("SuperUser with the provided email already exists")
+// 	}
 
-	// Check if the superuser already exists by username
-	existingSuperUserByUsername, err := s.repo.FindSuperUserByUsername(ctx, req.Username)
-	if err == nil && existingSuperUserByUsername != nil {
-		return newerrors.NewValidationError("SuperUser with the provided username already exists")
-	}
+// 	// Check if the superuser already exists by username
+// 	existingSuperUserByUsername, err := s.repo.FindSuperUserByUsername(ctx, req.Username)
+// 	if err == nil && existingSuperUserByUsername != nil {
+// 		return newerrors.NewValidationError("SuperUser with the provided username already exists")
+// 	}
 
-	// Hash the password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return newerrors.Wrap(err, "failed to hash password")
-	}
+// 	// Hash the password
+// 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+// 	if err != nil {
+// 		return newerrors.Wrap(err, "failed to hash password")
+// 	}
 
-	role := "SuperUser"
-	// Create a new SuperUser entity
-	superUserEntity := types.NewSuperUser(req.Email, req.FullName, req.Username, string(hashedPassword), role)
+// 	role := "SuperUser"
+// 	// Create a new SuperUser entity
+// 	superUserEntity := types.NewSuperUser(req.Email, req.FullName, req.Username, string(hashedPassword), role)
 
-	// Store the SuperUser in the repository using the SuperUserService
-	_, err = s.repo.CreateSuperUser(ctx, superUserEntity)
-	if err != nil {
-		return newerrors.Wrap(err, "failed to create superuser")
-	}
+// 	// Store the SuperUser in the repository using the SuperUserService
+// 	_, err = s.repo.CreateSuperUser(ctx, superUserEntity)
+// 	if err != nil {
+// 		return newerrors.Wrap(err, "failed to create superuser")
+// 	}
 
-	return nil
-}
+// 	return nil
+// }

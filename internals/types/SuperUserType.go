@@ -21,10 +21,15 @@ type SuperUserType struct {
 	Is2FAEnabled     bool      `bson:"is_2fa_enabled" json:"is_2fa_enabled" gorm:"default:false"`
 	TwoFactorSecret  *string   `bson:"two_factor_secret,omitempty" json:"-" gorm:"type:text"`
 	PermissionGroups []string  `bson:"permission_groups" json:"permission_groups" validate:"dive,required" gorm:"type:text[]"`
+
+	OTP           *string   `bson:"otp,omitempty" json:"-" gorm:"type:text"`
+	OTPExpiry     time.Time `bson:"otp_expiry,omitempty" json:"-"`
+	IsOTPVerified bool      `bson:"is_otp_verified" json:"is_otp_verified" gorm:"default:false"`
+	IsActive      bool      `bson:"is_active" json:"is_active" gorm:"default:true"`
 }
 
 // NewSuperUser creates a new instance of SuperUserType
-func NewSuperUser(email, fullName, username, hashedPassword, role string) *SuperUserType {
+func NewSuperUser(email, fullName, username, hashedPassword, role, otp string) *SuperUserType {
 	return &SuperUserType{
 		ID:             uuid.New(),
 		Email:          email,
@@ -34,6 +39,9 @@ func NewSuperUser(email, fullName, username, hashedPassword, role string) *Super
 		Role:           validateRole(role),
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),
+		IsActive:       true,
+		OTP:            &otp,
+		OTPExpiry:      time.Now().Add(configs.OTPExpiryDuration),
 	}
 }
 
