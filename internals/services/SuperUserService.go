@@ -2,11 +2,11 @@ package services
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
 	"github.com/lordofthemind/EventureGo/configs"
+	"github.com/lordofthemind/EventureGo/htmltemplates"
 	"github.com/lordofthemind/EventureGo/internals/newerrors"
 	"github.com/lordofthemind/EventureGo/internals/repositories"
 	"github.com/lordofthemind/EventureGo/internals/types"
@@ -122,8 +122,14 @@ func (s *SuperUserService) SendPasswordResetEmailWithUsernameOrEmail(ctx context
 	resetToken := utils.GenerateResetToken()
 	log.Printf("Sending password reset token to %s: %s\n", superUser.Email, resetToken)
 
+	htmlBody, err := htmltemplates.LoadAndRenderTemplate("welcome_email.html", nil)
+
+	if err != nil {
+		return newerrors.Wrap(err, "failed to render email template")
+	}
+
 	// Send password reset email using EmailService
-	err = s.emailService.SendEmail([]string{superUser.Email}, "Password Reset", fmt.Sprintf("Your reset token is: %s", resetToken), false)
+	err = s.emailService.SendEmail([]string{superUser.Email}, "Password Reset", htmlBody, true)
 	if err != nil {
 		return newerrors.Wrap(err, "failed to send reset email")
 	}
