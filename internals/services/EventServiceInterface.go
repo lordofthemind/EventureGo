@@ -11,7 +11,7 @@ import (
 // EventServiceInterface defines the methods required for managing events
 type EventServiceInterface interface {
 	// CreateEventService handles the creation of a new event
-	CreateEventService(ctx context.Context, OrganizerID uuid.UUID, event *utils.RegisterEventRequest) (*types.EventType, error)
+	CreateEventService(ctx context.Context, OrganizerID uuid.UUID, event *utils.EventDTO) (*types.EventType, error)
 
 	// // FindEventByIDService retrieves an event by its unique identifier
 	// FindEventByIDService(ctx context.Context, eventID uuid.UUID) (*types.EventType, error)

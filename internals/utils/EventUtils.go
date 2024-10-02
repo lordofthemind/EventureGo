@@ -17,6 +17,28 @@ type RegisterEventRequest struct {
 	Tags        []string  `json:"tags" validate:"dive,required"`                  // Optional tags, can be empty
 }
 
+// EventDTO is the internal representation of the event data
+type EventDTO struct {
+	Title       string
+	Description string
+	Location    string
+	StartTime   time.Time
+	EndTime     time.Time
+	Tags        []string
+}
+
+// TransformToEventDTO converts the incoming request to an EventDTO for internal use
+func TransformToEventDTO(eventReq RegisterEventRequest) *EventDTO {
+	return &EventDTO{
+		Title:       eventReq.Title,
+		Description: eventReq.Description,
+		Location:    eventReq.Location,
+		StartTime:   eventReq.StartTime,
+		EndTime:     eventReq.EndTime,
+		Tags:        eventReq.Tags,
+	}
+}
+
 // RegisterEventResponse defines the structure for the response after registering a new event
 type RegisterEventResponse struct {
 	ID          uuid.UUID         `json:"id"`           // The unique identifier for the event
@@ -31,4 +53,22 @@ type RegisterEventResponse struct {
 	UpdatedAt   time.Time         `json:"updated_at"`   // Timestamp when the event was last updated
 	IsActive    bool              `json:"is_active"`    // Status of the event (active/inactive)
 	Tags        []string          `json:"tags"`         // Tags associated with the event
+}
+
+// TransformToRegisterEventResponse converts the EventType to RegisterEventResponse
+func TransformToRegisterEventResponse(event *types.EventType) *RegisterEventResponse {
+	return &RegisterEventResponse{
+		ID:          event.ID,
+		Title:       event.Title,
+		Description: event.Description,
+		StartTime:   event.StartTime,
+		EndTime:     event.EndTime,
+		Location:    event.Location,
+		OrganizerID: event.OrganizerID,
+		Guests:      event.Guests, // Ensure this is handled properly (not nil)
+		CreatedAt:   event.CreatedAt,
+		UpdatedAt:   event.UpdatedAt,
+		IsActive:    event.IsActive,
+		Tags:        event.Tags,
+	}
 }
