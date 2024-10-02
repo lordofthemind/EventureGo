@@ -6,7 +6,6 @@ application:
   allowed_roles:
     - "SuperUser"
     - "Admin"
-    - "Moderator"
     - "User"
     - "Guest"
 

@@ -7,16 +7,12 @@ import (
 	"github.com/lordofthemind/EventureGo/configs"
 )
 
-// SuperUserType defines the structure for a superuser
+// SuperUserType extends BaseUserType for superusers
 type SuperUserType struct {
-	ID               uuid.UUID `bson:"_id,omitempty" json:"id,omitempty" gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
+	BaseUserType
 	Role             string    `bson:"role" json:"role" validate:"required" gorm:"not null"`
-	Email            string    `bson:"email" json:"email" validate:"required,email" gorm:"unique;not null"`
-	FullName         string    `bson:"full_name" json:"full_name" validate:"required,min=3,max=32" gorm:"not null"`
 	Username         string    `bson:"username" json:"username" validate:"required,min=3,max=32,alphanum" gorm:"unique;not null"`
 	HashedPassword   string    `bson:"hashed_password" json:"-" validate:"required,min=8" gorm:"not null"`
-	CreatedAt        time.Time `bson:"created_at" json:"created_at" gorm:"autoCreateTime"`
-	UpdatedAt        time.Time `bson:"updated_at" json:"updated_at" gorm:"autoUpdateTime"`
 	ResetToken       *string   `bson:"reset_token,omitempty" json:"reset_token,omitempty" gorm:"type:text"`
 	ResetTokenExpiry time.Time `bson:"reset_token_expiry,omitempty" json:"-"`
 	Is2FAEnabled     bool      `bson:"is_2fa_enabled" json:"is_2fa_enabled" gorm:"default:false"`
@@ -25,23 +21,24 @@ type SuperUserType struct {
 	OTP              *string   `bson:"otp,omitempty" json:"-" gorm:"type:text"`
 	OTPExpiry        time.Time `bson:"otp_expiry,omitempty" json:"-"`
 	IsOTPVerified    bool      `bson:"is_otp_verified" json:"is_otp_verified" gorm:"default:false"`
-	IsActive         bool      `bson:"is_active" json:"is_active" gorm:"default:true"`
 }
 
-// NewSuperUser creates a new instance of SuperUserType
+// NewSuperUser creates a new SuperUser instance
 func NewSuperUser(email, fullName, username, hashedPassword, role, otp string) *SuperUserType {
 	return &SuperUserType{
-		ID:             uuid.New(),
-		Email:          email,
-		FullName:       fullName,
+		BaseUserType: BaseUserType{
+			ID:        uuid.New(),
+			Email:     email,
+			FullName:  fullName,
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			IsActive:  true,
+		},
+		Role:           validateRole(role),
 		Username:       username,
 		HashedPassword: hashedPassword,
-		Role:           validateRole(role),
-		CreatedAt:      time.Now(),
-		UpdatedAt:      time.Now(),
-		IsActive:       true,
 		OTP:            &otp,
-		OTPExpiry:      time.Now().Add(configs.OTPExpiryDuration),
+		OTPExpiry:      time.Now().Add(15 * time.Minute), // Example OTP expiry
 	}
 }
 

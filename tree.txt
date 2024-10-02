@@ -36,12 +36,15 @@
 │   ├── newerrors
 │   │   └── SuperUserError.go
 │   ├── repositories
-│   │   ├── SuperUserInterface.go
+│   │   ├── EventReositoryInterface.go
+│   │   ├── SuperUserRepositoryInterface.go
 │   │   ├── inmemory
 │   │   │   └── SuperUserInMemoryRepository.go
 │   │   ├── mongodb
+│   │   │   ├── EventMongodbRepository.go
 │   │   │   └── SuperUserMongodbRepository.go
 │   │   └── postgresdb
+│   │       ├── EventPostgresdbRepository.go
 │   │       └── SuperUserPostgresdbRepository.go
 │   ├── responses
 │   │   └── StandardResponse.go
@@ -52,6 +55,9 @@
 │   │   ├── SuperUserService.go
 │   │   └── SuperUserServiceInterface.go
 │   ├── types
+│   │   ├── BaseUserType.go
+│   │   ├── EventType.go
+│   │   ├── GuestType.go
 │   │   └── SuperUserType.go
 │   └── utils
 │       └── SuperUserUtils.go
@@ -74,4 +80,4 @@
 │   └── main
 └── tree.txt
 
-29 directories, 46 files
+29 directories, 52 files
