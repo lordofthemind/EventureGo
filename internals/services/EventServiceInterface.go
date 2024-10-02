@@ -11,19 +11,19 @@ import (
 // EventServiceInterface defines the methods required for managing events
 type EventServiceInterface interface {
 	// CreateEventService handles the creation of a new event
-	CreateEventService(ctx context.Context, event *utils.RegisterEventRequest) (*types.EventType, error)
+	CreateEventService(ctx context.Context, OrganizerID uuid.UUID, event *utils.RegisterEventRequest) (*types.EventType, error)
 
-	// FindEventByIDService retrieves an event by its unique identifier
-	FindEventByIDService(ctx context.Context, eventID uuid.UUID) (*types.EventType, error)
+	// // FindEventByIDService retrieves an event by its unique identifier
+	// FindEventByIDService(ctx context.Context, eventID uuid.UUID) (*types.EventType, error)
 
-	// FindEventsByOrganizerIDService retrieves all events created by a specific organizer
-	FindEventsByOrganizerIDService(ctx context.Context, organizerID uuid.UUID) ([]*types.EventType, error)
+	// // FindEventsByOrganizerIDService retrieves all events created by a specific organizer
+	// FindEventsByOrganizerIDService(ctx context.Context, organizerID uuid.UUID) ([]*types.EventType, error)
 
-	// UpdateEventService updates an existing event with new data
-	UpdateEventService(ctx context.Context, event *types.EventType) error
+	// // UpdateEventService updates an existing event with new data
+	// UpdateEventService(ctx context.Context, event *types.EventType) error
 
-	// DeleteEventByIDService removes an event from the system by its unique identifier
-	DeleteEventByIDService(ctx context.Context, eventID uuid.UUID) error
+	// // DeleteEventByIDService removes an event from the system by its unique identifier
+	// DeleteEventByIDService(ctx context.Context, eventID uuid.UUID) error
 
 	// // FindAllEventsService retrieves all events in the system
 	// FindAllEventsService(ctx context.Context) ([]*types.EventType, error)

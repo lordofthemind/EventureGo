@@ -41,6 +41,7 @@ func GinServer() {
 
 	// Set up repository and service based on the selected database type from the config
 	var superUserRepository repositories.SuperUserRepositoryInterface
+	var eventRepository repositories.EventRepositoryInterface
 
 	switch configs.DatabaseType {
 	case "inmemory":
@@ -54,6 +55,7 @@ func GinServer() {
 		}
 		// Initialize PostgreSQL repository
 		superUserRepository = postgresdb.NewPostgresSuperUserRepository(configs.GormDB)
+		eventRepository = postgresdb.NewPostgresEventRepository(configs.GormDB)
 
 	case "mongodb":
 		// Check if MongoDB connection is initialized
@@ -61,8 +63,9 @@ func GinServer() {
 			log.Fatalf("MongoDB client was not initialized")
 		}
 		// Initialize MongoDB repository
-		superUserDB := gophermongo.GetDatabase(configs.MongoClient, "superuser")
-		superUserRepository = mongodb.NewMongoSuperUserRepository(superUserDB)
+		eventureGoDatabase := gophermongo.GetDatabase(configs.MongoClient, "EventureGo")
+		superUserRepository = mongodb.NewMongoSuperUserRepository(eventureGoDatabase)
+		eventRepository = mongodb.NewMongoEventRepository(eventureGoDatabase)
 
 		// Similarly, if you need to set up another repository with a different database:
 		// eventDB := gophermongo.GetDatabase(configs.MongoClient, "events")
@@ -86,9 +89,11 @@ func GinServer() {
 		configs.EmailPassword,
 	)
 	superUserService := services.NewSuperUserService(superUserRepository, tokenManager, emailService)
+	eventService := services.NewEventService(eventRepository)
 
 	// Initialize handler
 	superUserHandler := handlers.NewSuperUserGinHandler(superUserService)
+	eventHandler := handlers.NewEventGinHandler(eventService)
 
 	// Use gophergin to set up the server
 	serverConfig := gophergin.ServerConfig{
@@ -117,6 +122,7 @@ func GinServer() {
 
 	// Set up routes
 	routes.SetupSuperUserGinRoutes(router, superUserHandler, tokenManager)
+	routes.SetupEventGinRoutes(router, eventHandler, tokenManager)
 
 	// Start server (with or without TLS)
 	if err := ginServer.Start(); err != nil {

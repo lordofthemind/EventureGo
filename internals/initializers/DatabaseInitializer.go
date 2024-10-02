@@ -28,7 +28,7 @@ func DatabaseInitializer() {
 		}
 
 		// Auto migrate for GORM (Postgres)
-		if err := gormDB.AutoMigrate(&types.SuperUserType{}); err != nil {
+		if err := gormDB.AutoMigrate(&types.SuperUserType{}, &types.EventType{}, &types.GuestType{}); err != nil {
 			log.Fatalf("Failed to migrate Postgres database: %v", err)
 		}
 

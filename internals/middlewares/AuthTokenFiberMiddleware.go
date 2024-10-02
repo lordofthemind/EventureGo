@@ -51,7 +51,8 @@ func AuthTokenFiberMiddleware(tokenManager gophertoken.TokenManager) fiber.Handl
 		}
 
 		// Store necessary information in the context
-		c.Locals("userID", payload.ID)
+		c.Locals("payloadID", payload.ID)
+		c.Locals("userID", payload.UserID)
 		c.Locals("username", payload.Username)
 		c.Locals("role", role) // Set the role in the context for authorization
 

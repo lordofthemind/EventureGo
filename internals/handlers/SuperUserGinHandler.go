@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"reflect"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lordofthemind/EventureGo/configs"
@@ -213,27 +214,27 @@ func (h *SuperUserGinHandler) LogContextHandler(c *gin.Context) {
 	username, existsUsername := c.Get("username")
 	role, existsRole := c.Get("role")
 
-	// Log the retrieved values if they exist
+	// Log the retrieved values and their types if they exist
 	if existsID {
-		log.Println("Payload ID:", payloadID)
+		log.Printf("Payload ID: %v (Type: %s)\n", payloadID, reflect.TypeOf(payloadID))
 	} else {
 		log.Println("Payload ID not found in context")
 	}
 
 	if existsUserID {
-		log.Println("User ID:", userID)
+		log.Printf("User ID: %v (Type: %s)\n", userID, reflect.TypeOf(userID))
 	} else {
 		log.Println("User ID not found in context")
 	}
 
 	if existsUsername {
-		log.Println("Username:", username)
+		log.Printf("Username: %v (Type: %s)\n", username, reflect.TypeOf(username))
 	} else {
 		log.Println("Username not found in context")
 	}
 
 	if existsRole {
-		log.Println("Role:", role)
+		log.Printf("Role: %v (Type: %s)\n", role, reflect.TypeOf(role))
 	} else {
 		log.Println("Role not found in context")
 	}

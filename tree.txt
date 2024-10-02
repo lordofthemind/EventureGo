@@ -24,6 +24,7 @@
 │       └── welcome_verification_email.html
 ├── internals
 │   ├── handlers
+│   │   ├── EventGinHandl;er.go
 │   │   ├── SuperUserFiberHandler.go
 │   │   └── SuperUserGinHandler.go
 │   ├── initializers
@@ -37,21 +38,27 @@
 │   │   └── SuperUserError.go
 │   ├── repositories
 │   │   ├── EventReositoryInterface.go
+│   │   ├── GuestRepositoryInterface.go
 │   │   ├── SuperUserRepositoryInterface.go
 │   │   ├── inmemory
 │   │   │   └── SuperUserInMemoryRepository.go
 │   │   ├── mongodb
 │   │   │   ├── EventMongodbRepository.go
+│   │   │   ├── GuestMongodbRepository.go
 │   │   │   └── SuperUserMongodbRepository.go
 │   │   └── postgresdb
 │   │       ├── EventPostgresdbRepository.go
+│   │       ├── GuestPostgresdbRepository.go
 │   │       └── SuperUserPostgresdbRepository.go
 │   ├── responses
 │   │   └── StandardResponse.go
 │   ├── routes
+│   │   ├── EventGinRoutes.go
 │   │   ├── SuperUserFiberRoutes.go
 │   │   └── SuperUserGinRoutes.go
 │   ├── services
+│   │   ├── EventService.go
+│   │   ├── EventServiceInterface.go
 │   │   ├── SuperUserService.go
 │   │   └── SuperUserServiceInterface.go
 │   ├── types
@@ -60,6 +67,7 @@
 │   │   ├── GuestType.go
 │   │   └── SuperUserType.go
 │   └── utils
+│       ├── EventUtils.go
 │       └── SuperUserUtils.go
 ├── logs
 ├── main.go
@@ -80,4 +88,4 @@
 │   └── main
 └── tree.txt
 
-29 directories, 52 files
+29 directories, 60 files
