@@ -142,7 +142,7 @@ func (s *SuperUserService) LogInSuperuser(ctx context.Context, loginRequest *uti
 	}
 
 	// Generate token with role
-	authToken, err := s.tokenManager.GenerateToken(superUser.Username, configs.TokenExpiryDuration)
+	authToken, err := s.tokenManager.GenerateToken(superUser.ID, superUser.Username, configs.TokenExpiryDuration)
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -202,4 +203,43 @@ func (h *SuperUserGinHandler) PasswordResetHandler(c *gin.Context) {
 	// Use standardized response for successful password reset
 	response := responses.NewGinResponse(c, http.StatusOK, "Password reset successful", nil, nil)
 	c.JSON(http.StatusOK, response)
+}
+
+// LogContextHandler is a test handler that logs the values set in the context by the middleware
+func (h *SuperUserGinHandler) LogContextHandler(c *gin.Context) {
+	// Retrieve values from the context
+	payloadID, existsID := c.Get("payloadID")
+	userID, existsUserID := c.Get("userID")
+	username, existsUsername := c.Get("username")
+	role, existsRole := c.Get("role")
+
+	// Log the retrieved values if they exist
+	if existsID {
+		log.Println("Payload ID:", payloadID)
+	} else {
+		log.Println("Payload ID not found in context")
+	}
+
+	if existsUserID {
+		log.Println("User ID:", userID)
+	} else {
+		log.Println("User ID not found in context")
+	}
+
+	if existsUsername {
+		log.Println("Username:", username)
+	} else {
+		log.Println("Username not found in context")
+	}
+
+	if existsRole {
+		log.Println("Role:", role)
+	} else {
+		log.Println("Role not found in context")
+	}
+
+	// Respond to the client
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Logged context values successfully",
+	})
 }

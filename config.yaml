@@ -13,7 +13,7 @@ application:
 server:
   host: "localhost"
   port: 9090
-  use_tls: true
+  use_tls: false
 
 # Server Configuration (Common across environments)
 smtp_email:

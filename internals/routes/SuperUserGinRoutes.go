@@ -23,6 +23,7 @@ func SetupSuperUserGinRoutes(
 	{
 		authRoutes.GET("/logout", superUserHandler.LogOutSuperUserHandler)
 		// Add more authenticated routes here as needed
+		authRoutes.GET("/log-middleware", superUserHandler.LogContextHandler)
 	}
 	// Password reset routes
 	router.POST("/superuser/password-reset/request", superUserHandler.PasswordResetRequestHandler)

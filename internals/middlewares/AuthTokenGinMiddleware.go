@@ -57,9 +57,10 @@ func AuthTokenGinMiddleware(tokenManager gophertoken.TokenManager) gin.HandlerFu
 		}
 
 		// Set values in the context for use in the rest of the application
-		c.Set("userID", payload.ID)
+		c.Set("payloadID", payload.ID)
+		c.Set("userID", payload.UserID)
 		c.Set("username", payload.Username)
-		c.Set("role", role) // Set the role in the context for authorization
+		c.Set("role", role)
 
 		// Proceed with the request
 		c.Next()

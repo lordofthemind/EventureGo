@@ -7,13 +7,13 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/google/uuid v1.6.0
-	github.com/lordofthemind/mygopher/gopherfiber v0.0.0-20240929174713-cc0d1182f76f
+	github.com/lordofthemind/mygopher/gopherfiber v0.0.0-20241002113738-299e53d58e29
 	github.com/lordofthemind/mygopher/gophergin v0.0.0-20240929174713-cc0d1182f76f
 	github.com/lordofthemind/mygopher/gopherlogger v0.0.0-20240919183559-148b53310041
 	github.com/lordofthemind/mygopher/gophermongo v0.0.0-20240929190058-65e020b3f86b
 	github.com/lordofthemind/mygopher/gopherpostgres v0.0.0-20240929190058-65e020b3f86b
 	github.com/lordofthemind/mygopher/gophersmtp v0.0.0-20240928170410-8693d6e5e172
-	github.com/lordofthemind/mygopher/gophertoken v0.0.0-20240919183559-148b53310041
+	github.com/lordofthemind/mygopher/gophertoken v0.0.0-20241002113738-299e53d58e29
 	github.com/spf13/viper v1.19.0
 	go.mongodb.org/mongo-driver v1.17.0
 	golang.org/x/crypto v0.27.0
@@ -22,7 +22,7 @@ require (
 
 require (
 	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da // indirect
-	github.com/aead/chacha20poly1305 v0.0.0-20170617001512-233f39982aeb // indirect
+	github.com/aead/chacha20poly1305 v0.0.0-20201124145622-1a5aba2a8b29 // indirect
 	github.com/aead/poly1305 v0.0.0-20180717145839-3fee0db0b635 // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/bytedance/sonic v1.12.3 // indirect
