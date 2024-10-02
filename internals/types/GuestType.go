@@ -9,7 +9,9 @@ import (
 // GuestType extends BaseUserType for guests
 type GuestType struct {
 	BaseUserType
-	RSVPStatus string `bson:"rsvp_status" json:"rsvp_status" gorm:"type:text"` // For tracking RSVP status (e.g., "Attending", "Not Attending", "Pending")
+	RSVPStatus string    `bson:"rsvp_status" json:"rsvp_status" gorm:"type:text"`
+	EventID    uuid.UUID `bson:"event_id" json:"event_id" gorm:"not null"`
+	InvitedAt  time.Time `bson:"invited_at" json:"invited_at" gorm:"autoCreateTime"`
 }
 
 // NewGuest creates a new Guest instance
