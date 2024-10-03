@@ -75,20 +75,21 @@ func GinServer() {
 		log.Fatalf("Invalid database configuration: %s", configs.DatabaseType)
 	}
 
-	// Use the new NewTokenManager function
+	// Use the NewTokenManager function
 	tokenManager, err := gophertoken.NewTokenManager(configs.TokenType, configs.TokenSymmetricKey)
 	if err != nil {
 		log.Fatalf("Failed to initiate token: %v", err)
 	}
 
 	// Initialize services
-	emailService := gophersmtp.NewEmailService(
+	emailRoutineService := gophersmtp.NewEmailRoutineService(
 		configs.SMTPHost,
 		configs.SMTPPort,
 		configs.EmailUsername,
 		configs.EmailPassword,
 	)
-	superUserService := services.NewSuperUserService(superUserRepository, tokenManager, emailService)
+
+	superUserService := services.NewSuperUserService(superUserRepository, tokenManager, emailRoutineService)
 	eventService := services.NewEventService(eventRepository)
 
 	// Initialize handler
@@ -123,6 +124,17 @@ func GinServer() {
 	// Set up routes
 	routes.SetupSuperUserGinRoutes(router, superUserHandler, tokenManager)
 	routes.SetupEventGinRoutes(router, eventHandler, tokenManager)
+
+	// Start a goroutine to handle email results
+	go func() {
+		for result := range gophersmtp.EmailResultsChan {
+			if result.Error != nil {
+				log.Printf("Failed to send email to %s: %v", result.Recipient, result.Error)
+			} else {
+				log.Printf("Successfully sent email to %s", result.Recipient)
+			}
+		}
+	}()
 
 	// Start server (with or without TLS)
 	if err := ginServer.Start(); err != nil {

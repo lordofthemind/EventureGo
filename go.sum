@@ -95,6 +95,8 @@ github.com/lordofthemind/mygopher/gopherpostgres v0.0.0-20240929190058-65e020b3f
 github.com/lordofthemind/mygopher/gopherpostgres v0.0.0-20240929190058-65e020b3f86b/go.mod h1:P8wFJwoZmrhfozRPDRFOk2C0Rt31CaJRUfeV/CVlVRo=
 github.com/lordofthemind/mygopher/gophersmtp v0.0.0-20240928170410-8693d6e5e172 h1:qe14JjzTJnyIHoaVPmuxjkCIyaPWZ8eXzWh9fdKIXnU=
 github.com/lordofthemind/mygopher/gophersmtp v0.0.0-20240928170410-8693d6e5e172/go.mod h1:Co/0flPsSFikN6Jlsx+O/7Aexnqg9W1BhbNWHUde+sE=
+github.com/lordofthemind/mygopher/gophersmtp v0.0.0-20241003151555-210e9307d4cf h1:q3ZMVO1QeXRJ8aeHPC/h6XVz9rYFg1HoLUqQie/ktAM=
+github.com/lordofthemind/mygopher/gophersmtp v0.0.0-20241003151555-210e9307d4cf/go.mod h1:Co/0flPsSFikN6Jlsx+O/7Aexnqg9W1BhbNWHUde+sE=
 github.com/lordofthemind/mygopher/gophertoken v0.0.0-20241002113738-299e53d58e29 h1:+K9vHVtvc90RLZWBxUOqXMLJpKi0+mWEYi838Lf6D4E=
 github.com/lordofthemind/mygopher/gophertoken v0.0.0-20241002113738-299e53d58e29/go.mod h1:6Pk6Ysirg1MoxoCa7Bdtrrx2KfHgfzBU/OBFmwoombw=
 github.com/magiconair/properties v1.8.7 h1:IeQXZAiQcpL9mgcAe1Nu6cX9LLw6ExEHKjN0VQdvPDY=

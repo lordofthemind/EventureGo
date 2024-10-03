@@ -12,7 +12,7 @@ require (
 	github.com/lordofthemind/mygopher/gopherlogger v0.0.0-20240919183559-148b53310041
 	github.com/lordofthemind/mygopher/gophermongo v0.0.0-20240929190058-65e020b3f86b
 	github.com/lordofthemind/mygopher/gopherpostgres v0.0.0-20240929190058-65e020b3f86b
-	github.com/lordofthemind/mygopher/gophersmtp v0.0.0-20240928170410-8693d6e5e172
+	github.com/lordofthemind/mygopher/gophersmtp v0.0.0-20241003151555-210e9307d4cf
 	github.com/lordofthemind/mygopher/gophertoken v0.0.0-20241002113738-299e53d58e29
 	github.com/spf13/viper v1.19.0
 	go.mongodb.org/mongo-driver v1.17.0
