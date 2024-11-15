@@ -3,16 +3,12 @@
 ├── Future.md
 ├── Makefile
 ├── Readme.md
-├── bin
 ├── cmd
 │   ├── FiberServer.go
 │   └── GinServer.go
 ├── config.yaml
 ├── configs
 │   └── MainConfiguration.go
-├── docker
-├── docs
-├── examples
 ├── go.mod
 ├── go.sum
 ├── htmltemplates
@@ -66,13 +62,15 @@
 │   │   ├── EventType.go
 │   │   ├── GuestType.go
 │   │   └── SuperUserType.go
-│   └── utils
-│       ├── EventUtils.go
-│       └── SuperUserUtils.go
+│   ├── utils
+│   │   ├── EventUtils.go
+│   │   └── SuperUserUtils.go
+│   └── validators
+│       └── EventValidators.go
 ├── logs
+│   ├── 20241008_164809_ginServer.log
+│   └── 20241008_165044_ginServer.log
 ├── main.go
-├── pkgs
-├── scripts
 ├── ssl
 │   ├── ca.crt
 │   ├── ca.key
@@ -82,10 +80,8 @@
 │   ├── server.pem
 │   ├── server_cert_ext.cnf
 │   └── ssl.sh
-├── static
 ├── tmp
-│   ├── build-errors.log
 │   └── main
 └── tree.txt
 
-29 directories, 60 files
+23 directories, 62 files
